@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12345a"><meta name="description" content="SUVLASNIK PRO – Put Skalica 12, Split">
+<link rel="manifest" href="manifest.json"><title>SUVLASNIK PRO 1.1</title>
+<style>
+:root{--navy:#12345a;--blue:#2563eb;--ink:#172337;--muted:#68778c;--bg:#f3f6fa;--line:#e3e9f1;--white:#fff;--green:#12805c;--amber:#a66b12;--red:#bd3945;--shadow:0 8px 26px #142d4b0d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;min-height:100vh}.top{background:linear-gradient(125deg,#102d50,#1c4b7c);color:#fff;padding:19px 22px 25px;border-radius:0 0 23px 23px}.toprow,.head,.line{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:19px;font-weight:850}.brand small{display:block;font-size:10px;letter-spacing:1.4px;opacity:.72}.pill{font-size:11px;padding:6px 10px;border-radius:20px;background:#ffffff20;border:1px solid #ffffff35}.welcome{margin-top:20px}.welcome h1{margin:0;font-size:24px}.welcome p{margin:3px 0 0;color:#d4e2f1;font-size:13px}.layout{display:grid;grid-template-columns:220px 1fr;gap:21px;padding:21px}.side{background:#fff;border:1px solid var(--line);border-radius:15px;padding:9px;height:max-content;position:sticky;top:14px}.nav{display:block;width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:9px;color:#536176;font-weight:650}.nav.active,.nav:hover{background:#eaf1fb;color:var(--navy)}.nav span{display:inline-block;width:27px}.main{min-width:0}.pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:1px 0 16px}.pagehead h2{margin:0;font-size:22px}.sub,.meta{color:var(--muted);font-size:12px}.sub{margin-top:4px}.btn{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 14px;font-weight:700}.btn.secondary{background:#e9eff7;color:var(--navy)}.btn.danger{background:#fff0f1;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card,.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}.kpi{display:flex;justify-content:space-between;align-items:center}.kpi b{font-size:26px;color:var(--navy)}.kpi small{display:block;color:var(--muted)}.symbol{font-size:22px;background:#edf3fb;padding:9px;border-radius:11px}.notice{padding:12px;border-radius:11px;background:#fff7e5;border:1px solid #f1dfb8;color:#74551d;font-size:12px;margin:0 0 13px}.good{background:#e9f7ef;border-color:#c6ead5;color:#176341}.item h3{font-size:15px;margin:0 0 4px}.item p{font-size:13px;white-space:pre-wrap}.tag{font-size:11px;padding:4px 8px;border-radius:18px;background:#edf2f8;color:#4c5b70;font-weight:750}.tag.green{background:#e5f6ee;color:#16704f}.tag.amber{background:#fff4dc;color:#936014}.tag.red{background:#ffebed;color:#a82d3a}.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}.field label{font-size:12px;font-weight:750;color:#536176}.field input,.field textarea,.field select{width:100%;border:1px solid #d8e0eb;border-radius:9px;padding:10px;background:#fff}.field textarea{min-height:85px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{text-align:center;padding:28px;color:var(--muted);border:1px dashed #cbd5e1;background:#fff;border-radius:13px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:18px;font-size:12px}.tab.active{background:var(--navy);color:white}.progress{height:7px;background:#edf1f6;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue)}.mobile{display:none}.authwrap{max-width:440px;margin:9vh auto;padding:18px}.authcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow)}.authcard h2{margin:0 0 4px}.footer{text-align:center;color:#91a0b3;font-size:11px;padding:20px}.modalback{position:fixed;inset:0;background:#0c1d33a8;display:flex;align-items:center;justify-content:center;padding:15px;z-index:20}.modal{width:min(580px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:17px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}.close{border:0;background:#eef2f7;border-radius:8px;padding:7px 10px}.hide{display:none!important}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{background:#f4f7fb}.file{font-size:13px;color:var(--blue)}@media(max-width:760px){.layout{display:block;padding:14px 12px 80px}.side{display:none}.top{padding:16px 16px 21px}.welcome h1{font-size:21px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card,.item{padding:12px}.pagehead h2{font-size:19px}.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px #12345a10}.mobile button{border:0;background:transparent;color:#65748a;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}.mobile button.active{color:var(--blue);font-weight:800}.mobile b{font-size:18px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.pagehead .btn{font-size:12px;padding:8px 10px}}
+</style>
+</head>
+<body>
+<div id="auth" class="authwrap">
+ <div class="authcard">
+  <div class="brand" style="color:#12345a">SUVLASNIK PRO<small style="color:#68778c">PUT SKALICA 12 · SPLIT</small></div>
+  <h2 style="margin-top:24px">Prijava suvlasnika</h2><div class="sub">Pristup digitalnoj upravi zgrade</div>
+  <div class="notice" style="margin-top:17px">Za pristup potreban je korisnički račun koji je unaprijed odobrio administrator zgrade.</div>
+  <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" autocomplete="username" required></div><div class="field"><label>Lozinka</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn" style="width:100%">Prijavi se</button></form>
+  <div class="actions"><button class="btn secondary small" onclick="resetPassword()">Zaboravljena lozinka</button></div>
+  <p id="authMsg" class="meta"></p>
+  <div id="passwordResetPanel" class="hide">
+  <h2>Postavljanje nove lozinke</h2>
+  <p class="sub">Unesite novu administratorsku lozinku.</p>
+
+  <form id="passwordResetForm" onsubmit="saveNewPassword(event)">
+    <div class="field">
+      <label>Nova lozinka</label>
+      <input id="resetNewPassword" type="password"
+        minlength="8" autocomplete="new-password" required>
+    </div>
+
+    <div class="field">
+      <label>Ponovite novu lozinku</label>
+      <input id="resetConfirmPassword" type="password"
+        minlength="8" autocomplete="new-password" required>
+    </div>
+
+    <button class="btn" type="submit" style="width:100%">
+      Spremi novu lozinku
+    </button>
+  </form>
+</div>
+  <div id="passwordSetup" class="hide">
+  <h2 style="margin-top:24px">Postavljanje lozinke</h2>
+  <div class="sub">Dobrodošli u SUVLASNIK PRO. Postavite svoju osobnu lozinku za pristup aplikaciji.</div>
+
+  <form id="setupForm" onsubmit="saveInitialPassword(event)">
+    <div class="field">
+      <label>Nova lozinka</label>
+      <input id="newPassword" type="password" minlength="8"
+        autocomplete="new-password" required>
+    </div>
+    <div class="field">
+      <label>Ponovite novu lozinku</label>
+      <input id="confirmPassword" type="password" minlength="8"
+        autocomplete="new-password" required>
+    </div>
+    <button class="btn" style="width:100%">Spremi lozinku</button>
+  </form>
+</div>
+ </div>
+</div>
+<div id="app" class="hide">
+ <header class="top"><div class="toprow"><div class="brand">SUVLASNIK PRO<small>DIGITALNA UPRAVA ZGRADE</small></div><span class="pill" id="userPill">ONLINE</span></div><div class="welcome"><h1>Put Skalica 12</h1><p>Split · Informacije i upravljanje zgradom</p></div></header>
+ <div class="layout"><aside class="side" id="side"></aside><main class="main" id="view"></main></div><nav class="mobile" id="mobile"></nav>
+ <div class="footer">SUVLASNIK PRO 1.1 · Zaštićeni pristup · Put Skalica 12</div>
+</div><div id="modalRoot"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const NAV=[['home','⌂','Početna'],['votes','☑','Glasanja'],['issues','🔧','Problemi'],['docs','▤','Dokumenti'],['archive','▣','Arhiva'],['news','◉','Obavijesti'],['admin','⚙','Administracija']];
+let sb=null,user=null,profile=null,buildingId=null,page='home',issueFilter='sve',cache={};
+const configured=window.SUPABASE_CONFIG&&SUPABASE_CONFIG.url&&SUPABASE_CONFIG.anonKey&&!SUPABASE_CONFIG.url.includes('OVDJE');
+function msg(t,ok=false){$('authMsg').textContent=t;$('authMsg').style.color=ok?'#12805c':'#bd3945'}
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function d(s){return s?new Date(s).toLocaleDateString('hr-HR'):'—'}
+function note(t,good=false){return `<div class="notice ${good?'good':''}">${t}</div>`}
+function empty(t){return `<div class="empty">${t}</div>`}
+function head(t,s,btn=''){return `<div class="pagehead"><div><h2>${t}</h2><div class="sub">${s}</div></div>${btn}</div>`}
+function modal(t,body){$('modalRoot').innerHTML=`<div class="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalhead"><h3>${t}</h3><button class="close" onclick="closeModal()">✕</button></div>${body}</div></div>`}
+function closeModal(){$('modalRoot').innerHTML=''}
+function isAdmin(){return profile?.role==='admin'}
+function go(p){page=p;render()}
+function nav(){let h=NAV.map(([id,ic,t])=>`<button class="nav ${page===id?'active':''}" onclick="go('${id}')"><span>${ic}</span>${t}</button>`).join('');$('side').innerHTML=h;$('mobile').innerHTML=NAV.filter(x=>x[0]!=='admin'&&x[0]!=='archive').map(([id,ic,t])=>`<button class="${page===id?'active':''}" onclick="go('${id}')"><b>${ic}</b>${t}</button>`).join('')}
+async function boot(){if(!configured){msg('Nedostaje konfiguracija Supabase projekta. Pogledajte README i config.js.');return}sb=window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey);const {data:{session}}=await sb.auth.getSession();if(session)await enter(session.user);$('loginForm').addEventListener('submit',login);sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    showPasswordReset();
+  }
+
+  if (event === 'SIGNED_OUT') {
+    user = null;
+    profile = null;
+    $('app').classList.add('hide');
+    $('auth').classList.remove('hide');
+  }
+});}
+function showPasswordSetup(){
+  $('auth').classList.remove('hide');
+  $('app').classList.add('hide');
+  $('loginForm').classList.add('hide');
+  $('passwordSetup').classList.remove('hide');
+  msg('Pozivnica je prihvaćena. Postavite svoju lozinku.',true);
+}
+
+async function saveInitialPassword(e){
+  e.preventDefault();
+
+  const password = $('newPassword').value;
+  const confirm = $('confirmPassword').value;
+
+  if(password.length < 8){
+    msg('Lozinka mora imati najmanje 8 znakova.');
+    return;
+  }
+
+  if(password !== confirm){
+    msg('Lozinke se ne podudaraju.');
+    return;
+  }
+
+  msg('Spremanje lozinke…',true);
+
+  const {data,error} = await sb.auth.updateUser({
+    password: password,
+    data: {
+      ...user.user_metadata,
+      onboarding_completed: true
+    }
+  });
+
+  if(error){
+    msg('Greška: '+error.message);
+    return;
+  }
+
+  $('passwordSetup').classList.add('hide');
+  $('loginForm').classList.remove('hide');
+
+  msg('Lozinka je uspješno postavljena.',true);
+
+  await enter(data.user);
+}
+async function login(e){e.preventDefault();msg('Provjera prijave…');const {data,error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){msg(error.message);return}await enter(data.user)}
+async function resetPassword(){if(!configured){msg('Supabase nije konfiguriran.');return}const email=$('email').value;if(!email){msg('Najprije unesite e-mail adresu.');return}const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});msg(error?error.message:'Poslana je poveznica za promjenu lozinke.',!error)}
+function showPasswordReset() {
+  $('loginForm').classList.add('hide');
+  $('passwordResetPanel').classList.remove('hide');
+  msg('Unesite i potvrdite novu lozinku.', true);
+}
+
+async function saveNewPassword(e) {
+  e.preventDefault();
+
+  const password = $('resetNewPassword').value;
+  const confirm = $('resetConfirmPassword').value;
+
+  if (password.length < 8) {
+    msg('Lozinka mora imati najmanje 8 znakova.');
+    return;
+  }
+
+  if (password !== confirm) {
+    msg('Lozinke se ne podudaraju.');
+    return;
+  }
+
+  msg('Spremanje nove lozinke…', true);
+
+  const { data, error } = await sb.auth.updateUser({
+    password: password
+  });
+
+  if (error) {
+    msg('Greška pri spremanju: ' + error.message);
+    return;
+  }
+
+  $('passwordResetPanel').classList.add('hide');
+  $('loginForm').classList.remove('hide');
+
+  msg('Lozinka je uspješno promijenjena. Sada se možete prijaviti.', true);
+
+  $('passwordResetForm').reset();
+}
+async function enter(u){
+  user=u;
+
+  // Novi pozvani korisnik mora prvo postaviti lozinku
+  if(u.user_metadata?.onboarding_completed === false){
+    showPasswordSetup();
+    return;
+  }
+
+  const {data,error}=await sb
+    .from('members')
+    .select('*,buildings(*)')
+    .eq('id',u.id)
+    .eq('active',true)
+    .single();
+
+  if(error||!data){
+    await sb.auth.signOut();
+    msg('Račun nije povezan s aktivnim suvlasnikom. Obratite se administratoru.');
+    return;
+  }
+
+  profile=data;
+  buildingId=data.building_id;
+
+  $('auth').classList.add('hide');
+  $('app').classList.remove('hide');
+
+  $('userPill').textContent=esc(data.display_name||u.email);
+
+  await render();
+}async function rows(table,order='created_at'){let {data,error}=await sb.from(table).select('*').eq('building_id',buildingId).order(order,{ascending:false});if(error)throw error;return data||[]}
+async function render(){nav();const v=$('view');v.innerHTML=note('Učitavanje…');try{
+ if(page==='home'){let [issues,votes,news]=await Promise.all([rows('issues'),rows('votes'),rows('announcements')]);cache={issues,votes,news};let open=issues.filter(x=>x.status!=='riješeno').length,active=votes.filter(x=>x.status==='open').length;v.innerHTML=head('Pregled zgrade','Zajedničke informacije u stvarnom vremenu')+`<div class="grid"><div class="card kpi"><div><b>${profile.unit_label}</b><small>Vaš stan</small></div><span class="symbol">🏢</span></div><div class="card kpi"><div><b>${active}</b><small>Aktivna glasanja</small></div><span class="symbol">☑</span></div><div class="card kpi"><div><b>${open}</b><small>Otvorene prijave</small></div><span class="symbol">🔧</span></div></div><h3>Najnovije obavijesti</h3>${news.slice(0,3).map(x=>`<article class="item"><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)}</div><p>${esc(x.body)}</p></article>`).join('')||empty('Nema obavijesti')}`}
+ if(page==='news'){let a=await rows('announcements');v.innerHTML=head('Obavijesti','Objave predstavnika suvlasnika',isAdmin()?'<button class="btn" onclick="newNotice()">＋ Nova obavijest</button>':'')+a.map(x=>`<article class="item"><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)}</div><p>${esc(x.body)}</p></article>`).join('')||empty('Nema obavijesti')}
+ if(page==='issues'){let a=await rows('issues');v.innerHTML=head('Prijave problema','Kvarovi i poteškoće u zajedničkim dijelovima',`<button class="btn" onclick="newIssue()">＋ Nova prijava</button>`)+`<div class="tabs">${['sve','zaprimljeno','u obradi','riješeno'].map(x=>`<button class="tab ${issueFilter===x?'active':''}" onclick="issueFilter='${x}';render()">${x}</button>`).join('')}</div>`+a.filter(x=>issueFilter==='sve'||x.status===issueFilter).map(issueCard).join('')||empty('Nema prijava')}
+ if(page==='votes'){let a=await rows('votes');v.innerHTML=head('Glasanja','Glasovi i rezultati po suvlasničkim udjelima',isAdmin()?'<button class="btn" onclick="newVote()">＋ Novo glasanje</button>':'')+note('Glasanje u aplikaciji evidentira odgovor korisnika i udio iz registra. Formalnu pravnu valjanost, način dostave i većinu potrebno je konfigurirati prema odluci i važećim propisima.')+a.map(voteCard).join('')||empty('Nema glasanja')}
+ if(page==='docs'||page==='archive'){let a=await rows('documents');if(page==='archive')a=a.filter(x=>['odluka','zapisnik'].includes(x.category));v.innerHTML=head(page==='docs'?'Dokumentacija':'Arhiva odluka i zapisnika',page==='docs'?'Privatna pohrana dokumenata zgrade':'Automatski popis arhiviranih odluka i zapisnika',isAdmin()?'<button class="btn" onclick="newDoc()">＋ Učitaj dokument</button>':'')+a.map(docCard).join('')||empty('Nema dokumenata')}
+ if(page==='admin'){let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');if(error)throw error;v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+(isAdmin()?`<div class="card"><div class="line"><h3>Registar suvlasnika</h3><button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button></div><div class="tablewrap"><table><thead><tr><th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.unit_label)}</td><td>${esc(x.display_name)}</td><td>${x.share_percent??'—'}</td><td>${esc(x.role)}</td><td>${x.active?'Aktivan':'Neaktivan'}</td><td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}')">Uredi</button></td></tr>`).join('')}</tbody></table></div><p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p></div><div class="card"><h3>Izvještaj o glasovanju</h3><p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p><button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button></div>`:note('Samo administrator ima pristup registru i postavkama.'))}
+ }catch(e){v.innerHTML=note('Greška pri učitavanju: '+esc(e.message))}}
+function issueCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.location||'Zajednički prostor')} · ${d(x.created_at)}</div></div><span class="tag ${x.status==='riješeno'?'green':x.status==='u obradi'?'amber':'red'}">${esc(x.status)}</span></div><p>${esc(x.description)}</p><div class="actions">${x.photo_path?`<button class="btn secondary small" onclick="downloadFile('${esc(x.photo_path)}')">Preuzmi fotografiju</button>`:''}${isAdmin()?`<button class="btn secondary small" onclick="changeIssue('${x.id}','${x.status}')">Promijeni status</button>`:''}</div></article>`}
+function voteCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)} · ${x.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa'}</div></div><span class="tag ${x.status==='open'?'green':'amber'}">${x.status==='open'?'Otvoreno':'Zatvoreno'}</span></div><p>${esc(x.description)}</p><div class="actions">${x.status==='open'?`<button class="btn" onclick="castVote('${x.id}')">Glasaj</button>`:''}<button class="btn secondary" onclick="showResults('${x.id}')">Rezultati</button>${isAdmin()?`<button class="btn secondary" onclick="closeVote('${x.id}')">Zatvori</button>`:''}</div></article>`}
+function docCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)} · ${d(x.created_at)}</div></div><span class="tag">${esc(x.category)}</span></div><p>${esc(x.description||'')}</p><button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button></article>`}
+function newNotice(){modal('Nova obavijest',`<form onsubmit="saveNotice(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Tekst</label><textarea name="body" required></textarea></div><button class="btn">Objavi</button></form>`)}
+async function saveNotice(e){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('announcements').insert({building_id:buildingId,title:f.get('title'),body:f.get('body'),created_by:user.id});if(error)alert(error.message);else{closeModal();render()}}
+function newIssue(){modal('Nova prijava problema',`<form onsubmit="saveIssue(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Lokacija</label><select name="location"><option>Ulaz</option><option>Stubište</option><option>Podrum</option><option>Krov</option><option>Okućnica</option><option>Drugo</option></select></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Fotografija (opcionalno)</label><input type="file" name="photo" accept="image/*"></div><button class="btn">Pošalji prijavu</button></form>`)}
+async function saveIssue(e){e.preventDefault();let f=new FormData(e.target),file=f.get('photo'),path=null;if(file&&file.size){path=`${buildingId}/issues/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;let up=await sb.storage.from('building-files').upload(path,file,{upsert:false});if(up.error){alert(up.error.message);return}}let {error}=await sb.from('issues').insert({building_id:buildingId,created_by:user.id,title:f.get('title'),description:f.get('description'),location:f.get('location'),photo_path:path});if(error)alert(error.message);else{closeModal();render()}}
+async function changeIssue(id,status){let next=status==='zaprimljeno'?'u obradi':status==='u obradi'?'riješeno':'zaprimljeno';let {error}=await sb.from('issues').update({status:next}).eq('id',id);if(error)alert(error.message);else render()}
+function newDoc(){modal('Učitaj dokument',`<form onsubmit="saveDoc(event)"><div class="field"><label>Naziv dokumenta</label><input name="title" required></div><div class="field"><label>Kategorija</label><select name="category"><option value="zapisnik">Zapisnik</option><option value="odluka">Odluka</option><option value="ponuda">Ponuda</option><option value="racun">Račun</option><option value="ugovor">Ugovor</option><option value="plan">Plan održavanja</option><option value="ostalo">Ostalo</option></select></div><div class="field"><label>Opis / napomena</label><textarea name="description"></textarea></div><div class="field"><label>PDF ili fotografija</label><input type="file" name="file" accept=".pdf,image/*" required></div><button class="btn">Učitaj u arhivu</button></form>`)}
+async function saveDoc(e){e.preventDefault();let f=new FormData(e.target),file=f.get('file');if(!file||!file.size)return;let path=`${buildingId}/documents/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;let up=await sb.storage.from('building-files').upload(path,file,{upsert:false});if(up.error){alert(up.error.message);return}let {error}=await sb.from('documents').insert({building_id:buildingId,title:f.get('title'),category:f.get('category'),description:f.get('description'),storage_path:path,uploaded_by:user.id});if(error){alert(error.message);return}closeModal();render()}
+async function downloadFile(path){let {data,error}=await sb.storage.from('building-files').createSignedUrl(path,90);if(error){alert(error.message);return}window.open(data.signedUrl,'_blank','noopener')}
+function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka (zahtijeva pravnu provjeru)</option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasanje</button></form>`)}
+async function saveVote(e){e.preventDefault();let f=new FormData(e.target);let {data:v,error}=await sb.from('votes').insert({building_id:buildingId,title:f.get('title'),description:f.get('description'),vote_type:f.get('vote_type'),closes_at:f.get('closes_at')||null,status:'open',created_by:user.id}).select().single();if(error){alert(error.message);return}let opts=f.get('options').split(',').map(x=>x.trim()).filter(Boolean).map(label=>({vote_id:v.id,label}));let r=await sb.from('vote_options').insert(opts);if(r.error)alert(r.error.message);closeModal();render()}
+async function castVote(id){let {data:o,error}=await sb.from('vote_options').select('*').eq('vote_id',id);if(error){alert(error.message);return}modal('Vaš glas',`<p class="sub">Glas se može predati samo jednom. Nakon predaje nije ga moguće samostalno mijenjati.</p><div class="actions">${o.map(x=>`<button class="btn secondary" onclick="submitBallot('${id}','${x.id}')">${esc(x.label)}</button>`).join('')}</div>`)}
+async function submitBallot(vote_id,option_id){let {error}=await sb.rpc('cast_vote',{p_vote_id:vote_id,p_option_id:option_id});if(error)alert(error.message);else{closeModal();alert('Glas je zabilježen.');render()}}
+async function showResults(id){let {data,error}=await sb.rpc('vote_results',{p_vote_id:id});if(error){alert(error.message);return}let total=data.reduce((s,x)=>s+Number(x.share_percent||0),0);modal('Rezultati glasanja',`<div class="meta">Zbroj udjela glasova: ${total.toFixed(4)}%</div>${data.map(x=>`<div style="margin:14px 0"><div class="line"><b>${esc(x.option_label)}</b><b>${Number(x.share_percent).toFixed(4)}%</b></div><div class="progress"><span style="width:${Math.min(100,Number(x.share_percent))}%"></span></div><div class="meta">${x.votes_count} glasova</div></div>`).join('')}`)}
+async function closeVote(id){if(!confirm('Zatvoriti glasanje?'))return;let {error}=await sb.from('votes').update({status:'closed'}).eq('id',id);if(error)alert(error.message);else render()}
+function inviteMember(){modal('Pozovi suvlasnika',`<form onsubmit="sendInvite(event)"><div class="field"><label>E-mail adresa</label><input name="email" type="email" required></div><div class="field"><label>Stan</label><input name="unit_label" required placeholder="npr. Stan 3"></div><div class="field"><label>Ime i prezime</label><input name="display_name" required></div><div class="field"><label>Suvlasnički udio (%)</label><input name="share_percent" type="number" min="0" max="100" step="0.0001" required></div><div class="field"><label>Uloga</label><select name="role"><option value="owner">Suvlasnik</option><option value="admin">Administrator</option></select></div><button class="btn">Pošalji poziv</button></form><p class="meta">Poziv se šalje putem zaštićene Edge Function koja koristi service role na poslužitelju. Tajni ključ nikada ne smije biti u pregledniku.</p>`)}
+async function sendInvite(e){e.preventDefault();let f=new FormData(e.target);let {data:{session}}=await sb.auth.getSession();let res=await fetch(`${SUPABASE_CONFIG.url}/functions/v1/invite-member`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`,'apikey':SUPABASE_CONFIG.anonKey},body:JSON.stringify({email:f.get('email'),unit_label:f.get('unit_label'),display_name:f.get('display_name'),share_percent:Number(f.get('share_percent')),role:f.get('role'),building_id:buildingId})});let j=await res.json();if(!res.ok){alert(j.error||'Poziv nije uspio');return}closeModal();alert('Poziv je poslan.');render()}
+function editMember(id,unit,name,share){modal('Uredi suvlasnika',`<form onsubmit="updateMember(event,'${id}')"><div class="field"><label>Stan</label><input name="unit" value="${unit}" required></div><div class="field"><label>Ime</label><input name="name" value="${name}" required></div><div class="field"><label>Udio (%)</label><input name="share" type="number" min="0" max="100" step="0.0001" value="${share}" required></div><button class="btn">Spremi promjene</button></form>`)}
+async function updateMember(e,id){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('members').update({unit_label:f.get('unit'),display_name:f.get('name'),share_percent:Number(f.get('share'))}).eq('id',id);if(error)alert(error.message);else{closeModal();render()}}
+async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
+async function makeReport(){let id=$('reportVote').value;if(!id)return;let {data,error}=await sb.rpc('vote_results',{p_vote_id:id});if(error){alert(error.message);return}let {data:v}=await sb.from('votes').select('*').eq('id',id).single();const {jsPDF}=window.jspdf;let pdf=new jsPDF();pdf.setFont('helvetica','bold');pdf.setFontSize(17);pdf.text('SUVLASNIK PRO – IZVJESTAJ GLASANJA',14,18);pdf.setFont('helvetica','normal');pdf.setFontSize(11);pdf.text('Put Skalica 12, Split',14,27);pdf.text('Predmet: '+v.title,14,38);pdf.text('Vrsta: '+v.vote_type+' | Status: '+v.status,14,46);let y=61;pdf.setFont('helvetica','bold');pdf.text('Opcija',14,y);pdf.text('Broj glasova',105,y);pdf.text('Udio (%)',155,y);y+=8;pdf.setFont('helvetica','normal');data.forEach(r=>{pdf.text(String(r.option_label),14,y);pdf.text(String(r.votes_count),110,y);pdf.text(Number(r.share_percent).toFixed(4),155,y);y+=8});pdf.text('Napomena: izvjestaj je evidencijski prikaz podataka iz aplikacije; pravnu valjanost odluke treba provjeriti zasebno.',14,y+12,{maxWidth:180});pdf.save('izvjestaj-glasanja.pdf')}
+$('loginForm').addEventListener('submit',e=>{if(!configured){e.preventDefault();msg('Najprije konfigurirajte Supabase u config.js i objavite aplikaciju na HTTPS hostingu.')}});boot();
+</script>
+</body></html>
