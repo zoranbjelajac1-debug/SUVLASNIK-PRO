@@ -6,13 +6,40 @@
 <link rel="manifest" href="manifest.json"><title>SUVLASNIK PRO 1.1</title>
 <style>
 :root{--navy:#12345a;--blue:#2563eb;--ink:#172337;--muted:#68778c;--bg:#f3f6fa;--line:#e3e9f1;--white:#fff;--green:#12805c;--amber:#a66b12;--red:#bd3945;--shadow:0 8px 26px #142d4b0d}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;min-height:100vh}.top{background:linear-gradient(125deg,#102d50,#1c4b7c);color:#fff;padding:19px 22px 25px;border-radius:0 0 23px 23px}.toprow,.head,.line{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:19px;font-weight:850}.brand small{display:block;font-size:10px;letter-spacing:1.4px;opacity:.72}.pill{font-size:11px;padding:6px 10px;border-radius:20px;background:#ffffff20;border:1px solid #ffffff35}.welcome{margin-top:20px}.welcome h1{margin:0;font-size:24px}.welcome p{margin:3px 0 0;color:#d4e2f1;font-size:13px}.layout{display:grid;grid-template-columns:220px 1fr;gap:21px;padding:21px}.side{background:#fff;border:1px solid var(--line);border-radius:15px;padding:9px;height:max-content;position:sticky;top:14px}.nav{display:block;width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:9px;color:#536176;font-weight:650}.nav.active,.nav:hover{background:#eaf1fb;color:var(--navy)}.nav span{display:inline-block;width:27px}.main{min-width:0}.pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:1px 0 16px}.pagehead h2{margin:0;font-size:22px}.sub,.meta{color:var(--muted);font-size:12px}.sub{margin-top:4px}.btn{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 14px;font-weight:700}.btn.secondary{background:#e9eff7;color:var(--navy)}.btn.danger{background:#fff0f1;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card,.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}.kpi{display:flex;justify-content:space-between;align-items:center}.kpi b{font-size:26px;color:var(--navy)}.kpi small{display:block;color:var(--muted)}.symbol{font-size:22px;background:#edf3fb;padding:9px;border-radius:11px}.notice{padding:12px;border-radius:11px;background:#fff7e5;border:1px solid #f1dfb8;color:#74551d;font-size:12px;margin:0 0 13px}.good{background:#e9f7ef;border-color:#c6ead5;color:#176341}.item h3{font-size:15px;margin:0 0 4px}.item p{font-size:13px;white-space:pre-wrap}.tag{font-size:11px;padding:4px 8px;border-radius:18px;background:#edf2f8;color:#4c5b70;font-weight:750}.tag.green{background:#e5f6ee;color:#16704f}.tag.amber{background:#fff4dc;color:#936014}.tag.red{background:#ffebed;color:#a82d3a}.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}.field label{font-size:12px;font-weight:750;color:#536176}.field input,.field textarea,.field select{width:100%;border:1px solid #d8e0eb;border-radius:9px;padding:10px;background:#fff}.field textarea{min-height:85px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{text-align:center;padding:28px;color:var(--muted);border:1px dashed #cbd5e1;background:#fff;border-radius:13px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:18px;font-size:12px}.tab.active{background:var(--navy);color:white}.progress{height:7px;background:#edf1f6;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue)}.mobile{display:none}.authwrap{max-width:440px;margin:9vh auto;padding:18px}.authcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow)}.authcard h2{margin:0 0 4px}.footer{text-align:center;color:#91a0b3;font-size:11px;padding:20px}.modalback{position:fixed;inset:0;background:#0c1d33a8;display:flex;align-items:center;justify-content:center;padding:15px;z-index:20}.modal{width:min(580px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:17px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}.close{border:0;background:#eef2f7;border-radius:8px;padding:7px 10px}.hide{display:none!important}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{background:#f4f7fb}.file{font-size:13px;color:var(--blue)}@media(max-width:760px){.layout{display:block;padding:14px 12px 80px}.side{display:none}.top{padding:16px 16px 21px}.welcome h1{font-size:21px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card,.item{padding:12px}.pagehead h2{font-size:19px}.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px #12345a10}.mobile button{border:0;background:transparent;color:#65748a;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}.mobile button.active{color:var(--blue);font-weight:800}.mobile b{font-size:18px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.pagehead .btn{font-size:12px;padding:8px 10px}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;min-height:100vh}.top{background:linear-gradient(125deg,#102d50,#1c4b7c);color:#fff;padding:19px 22px 25px;border-radius:0 0 23px 23px}.toprow,.head,.line{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:19px;font-weight:850}
+.brandmark{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brandmark img{
+  width:54px;
+  height:54px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:10px;
+  padding:4px;
+  flex-shrink:0;
+}
+
+.auth-brand img{
+  width:68px;
+  height:68px;
+}
+.brand small{display:block;font-size:10px;letter-spacing:1.4px;opacity:.72}.pill{font-size:11px;padding:6px 10px;border-radius:20px;background:#ffffff20;border:1px solid #ffffff35}.welcome{margin-top:20px}.welcome h1{margin:0;font-size:24px}.welcome p{margin:3px 0 0;color:#d4e2f1;font-size:13px}.layout{display:grid;grid-template-columns:220px 1fr;gap:21px;padding:21px}.side{background:#fff;border:1px solid var(--line);border-radius:15px;padding:9px;height:max-content;position:sticky;top:14px}.nav{display:block;width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:9px;color:#536176;font-weight:650}.nav.active,.nav:hover{background:#eaf1fb;color:var(--navy)}.nav span{display:inline-block;width:27px}.main{min-width:0}.pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:1px 0 16px}.pagehead h2{margin:0;font-size:22px}.sub,.meta{color:var(--muted);font-size:12px}.sub{margin-top:4px}.btn{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 14px;font-weight:700}.btn.secondary{background:#e9eff7;color:var(--navy)}.btn.danger{background:#fff0f1;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card,.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}.kpi{display:flex;justify-content:space-between;align-items:center}.kpi b{font-size:26px;color:var(--navy)}.kpi small{display:block;color:var(--muted)}.symbol{font-size:22px;background:#edf3fb;padding:9px;border-radius:11px}.notice{padding:12px;border-radius:11px;background:#fff7e5;border:1px solid #f1dfb8;color:#74551d;font-size:12px;margin:0 0 13px}.good{background:#e9f7ef;border-color:#c6ead5;color:#176341}.item h3{font-size:15px;margin:0 0 4px}.item p{font-size:13px;white-space:pre-wrap}.tag{font-size:11px;padding:4px 8px;border-radius:18px;background:#edf2f8;color:#4c5b70;font-weight:750}.tag.green{background:#e5f6ee;color:#16704f}.tag.amber{background:#fff4dc;color:#936014}.tag.red{background:#ffebed;color:#a82d3a}.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}.field label{font-size:12px;font-weight:750;color:#536176}.field input,.field textarea,.field select{width:100%;border:1px solid #d8e0eb;border-radius:9px;padding:10px;background:#fff}.field textarea{min-height:85px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{text-align:center;padding:28px;color:var(--muted);border:1px dashed #cbd5e1;background:#fff;border-radius:13px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:18px;font-size:12px}.tab.active{background:var(--navy);color:white}.progress{height:7px;background:#edf1f6;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue)}.mobile{display:none}.authwrap{max-width:440px;margin:9vh auto;padding:18px}.authcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow)}.authcard h2{margin:0 0 4px}.footer{text-align:center;color:#91a0b3;font-size:11px;padding:20px}.modalback{position:fixed;inset:0;background:#0c1d33a8;display:flex;align-items:center;justify-content:center;padding:15px;z-index:20}.modal{width:min(580px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:17px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}.close{border:0;background:#eef2f7;border-radius:8px;padding:7px 10px}.hide{display:none!important}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{background:#f4f7fb}.file{font-size:13px;color:var(--blue)}@media(max-width:760px){.layout{display:block;padding:14px 12px 80px}.side{display:none}.top{padding:16px 16px 21px}.welcome h1{font-size:21px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card,.item{padding:12px}.pagehead h2{font-size:19px}.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px #12345a10}.mobile button{border:0;background:transparent;color:#65748a;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}.mobile button.active{color:var(--blue);font-weight:800}.mobile b{font-size:18px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.pagehead .btn{font-size:12px;padding:8px 10px}}
 </style>
 </head>
 <body>
 <div id="auth" class="authwrap">
  <div class="authcard">
-  <div class="brand" style="color:#12345a">SUVLASNIK PRO<small style="color:#68778c">PUT SKALICA 12 · SPLIT</small></div>
+  <div class="brandmark auth-brand">
+  <img src="logo.png" alt="SUVLASNIK PRO logo">
+  <div class="brand" style="color:#12345a">
+    SUVLASNIK PRO
+    <small style="color:#68778c">PUT SKALICA 12 · SPLIT</small>
+  </div>
+</div>
   <h2 style="margin-top:24px">Prijava suvlasnika</h2><div class="sub">Pristup digitalnoj upravi zgrade</div>
   <div class="notice" style="margin-top:17px">Za pristup potreban je korisnički račun koji je unaprijed odobrio administrator zgrade.</div>
   <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" autocomplete="username" required></div><div class="field"><label>Lozinka</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn" style="width:100%">Prijavi se</button></form>
@@ -61,12 +88,19 @@
  </div>
 </div>
 <div id="app" class="hide">
- <header class="top"><div class="toprow"><div class="brand">SUVLASNIK PRO<small>DIGITALNA UPRAVA ZGRADE</small></div><span class="pill" id="userPill">ONLINE</span></div><div class="welcome"><h1>Put Skalica 12</h1><p>Split · Informacije i upravljanje zgradom</p></div></header>
+ <header class="top"><div class="toprow"><div class="brandmark">
+  <img src="logo.png" alt="SUVLASNIK PRO logo">
+  <div class="brand">
+    SUVLASNIK PRO
+    <small>DIGITALNA UPRAVA ZGRADE</small>
+  </div>
+</div><span class="pill" id="userPill">ONLINE</span></div><div class="welcome"><h1>Put Skalica 12</h1><p>Split · Informacije i upravljanje zgradom</p></div></header>
  <div class="layout"><aside class="side" id="side"></aside><main class="main" id="view"></main></div><nav class="mobile" id="mobile"></nav>
  <div class="footer">SUVLASNIK PRO 1.1 · Zaštićeni pristup · Put Skalica 12</div>
 </div><div id="modalRoot"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="config.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -76,6 +110,17 @@ const configured=window.SUPABASE_CONFIG&&SUPABASE_CONFIG.url&&SUPABASE_CONFIG.an
 function msg(t,ok=false){$('authMsg').textContent=t;$('authMsg').style.color=ok?'#12805c':'#bd3945'}
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function d(s){return s?new Date(s).toLocaleDateString('hr-HR'):'—'}
+function dt(s){
+  return s
+    ? new Date(s).toLocaleString('hr-HR',{
+        day:'2-digit',
+        month:'2-digit',
+        year:'numeric',
+        hour:'2-digit',
+        minute:'2-digit'
+      })
+    : 'Nije određeno';
+}
 function note(t,good=false){return `<div class="notice ${good?'good':''}">${t}</div>`}
 function empty(t){return `<div class="empty">${t}</div>`}
 function head(t,s,btn=''){return `<div class="pagehead"><div><h2>${t}</h2><div class="sub">${s}</div></div>${btn}</div>`}
@@ -225,8 +270,51 @@ async function render(){nav();const v=$('view');v.innerHTML=note('Učitavanje…
  if(page==='admin'){let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');if(error)throw error;v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+(isAdmin()?`<div class="card"><div class="line"><h3>Registar suvlasnika</h3><button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button></div><div class="tablewrap"><table><thead><tr><th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.unit_label)}</td><td>${esc(x.display_name)}</td><td>${x.share_percent??'—'}</td><td>${esc(x.role)}</td><td>${x.active?'Aktivan':'Neaktivan'}</td><td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}')">Uredi</button></td></tr>`).join('')}</tbody></table></div><p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p></div><div class="card"><h3>Izvještaj o glasovanju</h3><p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p><button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button></div>`:note('Samo administrator ima pristup registru i postavkama.'))}
  }catch(e){v.innerHTML=note('Greška pri učitavanju: '+esc(e.message))}}
 function issueCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.location||'Zajednički prostor')} · ${d(x.created_at)}</div></div><span class="tag ${x.status==='riješeno'?'green':x.status==='u obradi'?'amber':'red'}">${esc(x.status)}</span></div><p>${esc(x.description)}</p><div class="actions">${x.photo_path?`<button class="btn secondary small" onclick="downloadFile('${esc(x.photo_path)}')">Preuzmi fotografiju</button>`:''}${isAdmin()?`<button class="btn secondary small" onclick="changeIssue('${x.id}','${x.status}')">Promijeni status</button>`:''}</div></article>`}
-function voteCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)} · ${x.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa'}</div></div><span class="tag ${x.status==='open'?'green':'amber'}">${x.status==='open'?'Otvoreno':'Zatvoreno'}</span></div><p>${esc(x.description)}</p><div class="actions">${x.status==='open'?`<button class="btn" onclick="castVote('${x.id}')">Glasaj</button>`:''}<button class="btn secondary" onclick="showResults('${x.id}')">Rezultati</button>${isAdmin()?`<button class="btn secondary" onclick="closeVote('${x.id}')">Zatvori</button>`:''}</div></article>`}
-function docCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)} · ${d(x.created_at)}</div></div><span class="tag">${esc(x.category)}</span></div><p>${esc(x.description||'')}</p><button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button></article>`}
+function voteCard(x){
+  return `
+    <article class="item">
+      <div class="line">
+        <div>
+          <h3>${esc(x.title)}</h3>
+          <div class="meta">
+            ${x.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa'}
+          </div>
+        </div>
+
+        <span class="tag ${x.status==='open'?'green':'amber'}">
+          ${x.status==='open'?'Otvoreno':'Zatvoreno'}
+        </span>
+      </div>
+
+      <p>${esc(x.description||'Bez opisa')}</p>
+
+      <div class="meta" style="margin:12px 0">
+        <div><b>Početak glasanja:</b> ${dt(x.opens_at)}</div>
+        <div><b>Rok za glasanje:</b> ${dt(x.closes_at)}</div>
+      </div>
+
+      <div class="actions">
+        ${x.status==='open'
+          ? `<button class="btn" onclick="castVote('${x.id}')">Glasaj</button>`
+          : ''
+        }
+
+        <button class="btn secondary"
+          onclick="showResults('${x.id}')">
+          Rezultati
+        </button>
+
+        ${isAdmin()
+          ? `<button class="btn secondary"
+              onclick="closeVote('${x.id}')">
+              Zatvori
+            </button>`
+          : ''
+        }
+      </div>
+    </article>
+  `;
+}function docCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)} · ${d(x.created_at)}</div></div><span class="tag">${esc(x.category)}</span></div><p>${esc(x.description||'')}</p><button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button></article>`}
 function newNotice(){modal('Nova obavijest',`<form onsubmit="saveNotice(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Tekst</label><textarea name="body" required></textarea></div><button class="btn">Objavi</button></form>`)}
 async function saveNotice(e){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('announcements').insert({building_id:buildingId,title:f.get('title'),body:f.get('body'),created_by:user.id});if(error)alert(error.message);else{closeModal();render()}}
 function newIssue(){modal('Nova prijava problema',`<form onsubmit="saveIssue(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Lokacija</label><select name="location"><option>Ulaz</option><option>Stubište</option><option>Podrum</option><option>Krov</option><option>Okućnica</option><option>Drugo</option></select></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Fotografija (opcionalno)</label><input type="file" name="photo" accept="image/*"></div><button class="btn">Pošalji prijavu</button></form>`)}
@@ -240,14 +328,33 @@ async function saveVote(e){e.preventDefault();let f=new FormData(e.target);let {
 async function castVote(id){let {data:o,error}=await sb.from('vote_options').select('*').eq('vote_id',id);if(error){alert(error.message);return}modal('Vaš glas',`<p class="sub">Glas se može predati samo jednom. Nakon predaje nije ga moguće samostalno mijenjati.</p><div class="actions">${o.map(x=>`<button class="btn secondary" onclick="submitBallot('${id}','${x.id}')">${esc(x.label)}</button>`).join('')}</div>`)}
 async function submitBallot(vote_id,option_id){let {error}=await sb.rpc('cast_vote',{p_vote_id:vote_id,p_option_id:option_id});if(error)alert(error.message);else{closeModal();alert('Glas je zabilježen.');render()}}
 
+
 async function showResults(id){
-  const {data:totals,error:e1}=await sb.rpc('vote_results',{p_vote_id:id});
-  if(e1){alert(e1.message);return}
 
-  const {data:people,error:e2}=await sb.rpc('vote_individual_results',{p_vote_id:id});
-  if(e2){alert(e2.message);return}
+  const {data:totals,error:e1}=await sb.rpc(
+    'vote_results',
+    {p_vote_id:id}
+  );
 
-  const total=totals.reduce((s,x)=>s+Number(x.share_percent||0),0);
+  if(e1){
+    alert(e1.message);
+    return;
+  }
+
+  const {data:people,error:e2}=await sb.rpc(
+    'vote_individual_results',
+    {p_vote_id:id}
+  );
+
+  if(e2){
+    alert(e2.message);
+    return;
+  }
+
+  const total=totals.reduce(
+    (s,x)=>s+Number(x.share_percent||0),
+    0
+  );
 
   const aggregate=totals.map(x=>`
     <div style="margin:14px 0">
@@ -268,19 +375,25 @@ async function showResults(id){
       <td>${esc(p.display_name||'')}</td>
       <td><b>${esc(p.option_label||'Nije glasovao')}</b></td>
       <td>${Number(p.share_percent||0).toFixed(4)}%</td>
-      <td>${p.voted_at?new Date(p.voted_at).toLocaleString('hr-HR'):'-'}</td>
+      <td>${p.voted_at
+        ?new Date(p.voted_at).toLocaleString('hr-HR')
+        :'-'
+      }</td>
     </tr>
   `).join('');
 
   modal('Rezultati glasanja',`
+
     <div class="meta">
       Zbroj udjela glasova: ${total.toFixed(4)}%
     </div>
 
     <h3>Ukupni rezultati</h3>
+
     ${aggregate}
 
     <hr>
+
     <h3>Pojedinačni glasovi suvlasnika</h3>
 
     <div class="tablewrap">
@@ -297,15 +410,601 @@ async function showResults(id){
         <tbody>${individual}</tbody>
       </table>
     </div>
+
+    <hr>
+
+    <div class="actions">
+      <button class="btn" onclick="exportVoteExcel('${id}')">
+        ↓ Izvezi u Excel (.xlsx)
+      </button>
+
+      <button class="btn secondary" onclick="exportVotePDF('${id}')">
+        ↓ Izvezi u PDF (.pdf)
+      </button>
+    </div>
+
   `);
 }
+
+
+
+async function exportVoteExcel(id){
+
+  if(!window.ExcelJS){
+    alert('ExcelJS biblioteka nije učitana.');
+    return;
+  }
+
+  try{
+
+    const {data:v,error:ev}=await sb
+      .from('votes')
+      .select('*')
+      .eq('id',id)
+      .single();
+
+    if(ev) throw ev;
+
+    const {data:totals,error:e1}=await sb.rpc(
+      'vote_results',{p_vote_id:id}
+    );
+
+    if(e1) throw e1;
+
+    const {data:people,error:e2}=await sb.rpc(
+      'vote_individual_results',{p_vote_id:id}
+    );
+
+    if(e2) throw e2;
+
+    const fmt=s=>s
+      ?new Date(s).toLocaleString('hr-HR')
+      :'Nije određeno';
+
+    const navy='17365D';
+    const blue='D9EAF7';
+    const light='F2F6FA';
+    const white='FFFFFF';
+    const borderColor='A6B7C8';
+
+    const wb=new ExcelJS.Workbook();
+
+    wb.creator='SUVLASNIK PRO';
+    wb.subject='Izvještaj glasanja';
+    wb.title=v.title||'Rezultati glasanja';
+
+    const border={
+      top:{style:'thin',color:{argb:'FF'+borderColor}},
+      bottom:{style:'thin',color:{argb:'FF'+borderColor}},
+      left:{style:'thin',color:{argb:'FF'+borderColor}},
+      right:{style:'thin',color:{argb:'FF'+borderColor}}
+    };
+
+    const logoUrl=
+      'https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png';
+
+    const response=await fetch(logoUrl);
+
+    if(!response.ok){
+      throw new Error('Logotip nije pronađen na GitHubu.');
+    }
+
+    const blob=await response.blob();
+
+    const logoData=await new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=reject;
+      reader.readAsDataURL(blob);
+    });
+
+    const logoId=wb.addImage({
+      base64:logoData,
+      extension:'png'
+    });
+
+    function styleCell(cell,options={}){
+      cell.border=border;
+      cell.font={
+        name:'Arial',
+        size:10,
+        color:{argb:'FF222222'},
+        ...options.font
+      };
+      cell.alignment={
+        vertical:'middle',
+        wrapText:true,
+        ...options.alignment
+      };
+      if(options.fill) cell.fill=options.fill;
+    }
+
+    function headerCell(cell){
+      styleCell(cell,{
+        font:{bold:true,color:{argb:'FF'+white}},
+        fill:{type:'pattern',pattern:'solid',
+          fgColor:{argb:'FF'+navy}},
+        alignment:{horizontal:'center',vertical:'middle',wrapText:true}
+      });
+    }
+
+    function addBrand(ws,endCol){
+      ws.addImage(logoId,{
+        tl:{col:0,row:0},
+        ext:{width:100,height:75}
+      });
+
+      ws.mergeCells(`D1:${endCol}2`);
+
+      const title=ws.getCell('D1');
+      title.value='SUVLASNIK PRO\nIZVJEŠTAJ GLASANJA';
+
+      title.font={
+        name:'Arial',
+        size:17,
+        bold:true,
+        color:{argb:'FF'+navy}
+      };
+
+      title.alignment={
+        horizontal:'center',
+        vertical:'middle',
+        wrapText:true
+      };
+
+      ws.getRow(1).height=30;
+      ws.getRow(2).height=30;
+      ws.getRow(3).height=12;
+      ws.views=[{showGridLines:false}];
+    }
+
+    function metadata(ws,row,label,value,endCol){
+      ws.getCell(`A${row}`).value=label;
+      ws.getCell(`A${row}`).font={bold:true,color:{argb:'FF'+navy}};
+      ws.getCell(`A${row}`).fill={
+        type:'pattern',pattern:'solid',
+        fgColor:{argb:'FF'+blue}
+      };
+      ws.getCell(`A${row}`).border=border;
+
+      ws.mergeCells(`B${row}:${endCol}${row}`);
+
+      const c=ws.getCell(`B${row}`);
+      c.value=value;
+      styleCell(c);
+      ws.getRow(row).height=25;
+    }
+
+    // LIST 1 – SAŽETAK
+
+    const ws1=wb.addWorksheet('Sazetak');
+
+    ws1.columns=[
+      {width:28},{width:20},{width:18},
+      {width:15},{width:15},{width:15}
+    ];
+
+    addBrand(ws1,'F');
+
+    metadata(ws1,4,'Zgrada','Put Skalica 12, Split','F');
+    metadata(ws1,5,'Naslov glasanja',v.title||'','F');
+    metadata(ws1,6,'Opis',v.description||'Bez opisa','F');
+    ws1.getRow(6).height=65;
+
+    metadata(ws1,7,'Vrsta glasanja',
+      v.vote_type==='formalna_odluka'
+        ?'Formalna odluka':'Anketa','F');
+
+    metadata(ws1,8,'Razdoblje od',fmt(v.opens_at),'F');
+    metadata(ws1,9,'Razdoblje do',fmt(v.closes_at),'F');
+    metadata(ws1,10,'Status',
+      v.status==='open'?'Otvoreno':'Zatvoreno','F');
+
+    ws1.mergeCells('A12:C12');
+    ws1.getCell('A12').value='UKUPNI REZULTATI';
+    ws1.getCell('A12').font={bold:true,color:{argb:'FF'+white}};
+    ws1.getCell('A12').fill={
+      type:'pattern',pattern:'solid',
+      fgColor:{argb:'FF'+navy}
+    };
+
+    ['Opcija','Broj glasova','Udio (%)'].forEach((x,i)=>{
+      headerCell(ws1.getRow(13).getCell(i+1));
+      ws1.getRow(13).getCell(i+1).value=x;
+    });
+
+    totals.forEach((x,i)=>{
+      const row=ws1.getRow(14+i);
+
+      row.values=[
+        x.option_label||'',
+        Number(x.votes_count||0),
+        Number(x.share_percent||0)
+      ];
+
+      row.eachCell((cell,col)=>{
+        styleCell(cell,{
+          fill:i%2?{
+            type:'pattern',pattern:'solid',
+            fgColor:{argb:'FF'+light}
+          }:undefined,
+          alignment:{horizontal:col===1?'left':'center'}
+        });
+      });
+
+      row.getCell(3).numFmt='0.0000"%"';
+      row.height=23;
+    });
+
+    const totalRow=14+totals.length;
+
+    ws1.mergeCells(`A${totalRow}:B${totalRow}`);
+    ws1.getCell(`A${totalRow}`).value='ZBROJ UDJELA (%)';
+    ws1.getCell(`C${totalRow}`).value={
+      formula:`SUM(C14:C${totalRow-1})`
+    };
+
+    [1,3].forEach(col=>{
+      const cell=ws1.getRow(totalRow).getCell(col);
+      cell.font={bold:true,color:{argb:'FF'+navy}};
+      cell.fill={
+        type:'pattern',pattern:'solid',
+        fgColor:{argb:'FF'+blue}
+      };
+      cell.border=border;
+    });
+
+    ws1.getCell(`C${totalRow}`).numFmt='0.0000"%"';
+
+    ws1.autoFilter={
+      from:{row:13,column:1},
+      to:{row:13+Math.max(totals.length,1),column:3}
+    };
+
+    ws1.pageSetup={
+      paperSize:9,
+      orientation:'portrait',
+      fitToPage:true,
+      fitToWidth:1,
+      fitToHeight:1
+    };
+
+    // LIST 2 – POJEDINAČNI GLASOVI
+
+    const ws2=wb.addWorksheet('Pojedinacni glasovi');
+
+    ws2.columns=[
+      {width:15},{width:30},{width:25},
+      {width:23},{width:25},{width:5},{width:5},{width:5}
+    ];
+
+    addBrand(ws2,'H');
+
+    metadata(ws2,4,'Naslov glasanja',v.title||'','H');
+    metadata(ws2,5,'Opis',v.description||'Bez opisa','H');
+    ws2.getRow(5).height=65;
+    metadata(ws2,6,'Razdoblje od',fmt(v.opens_at),'H');
+    metadata(ws2,7,'Razdoblje do',fmt(v.closes_at),'H');
+
+    const headings=[
+      'Stan',
+      'Suvlasnik',
+      'Glas',
+      'Suvlasnički udio (%)',
+      'Vrijeme glasanja'
+    ];
+
+    headings.forEach((x,i)=>{
+      const cell=ws2.getRow(9).getCell(i+1);
+      cell.value=x;
+      headerCell(cell);
+    });
+
+    ws2.getRow(9).height=34;
+
+    people.forEach((p,i)=>{
+      const row=ws2.getRow(10+i);
+
+      row.values=[
+        p.unit_label||'',
+        p.display_name||'',
+        p.option_label||'Nije glasovao',
+        Number(p.share_percent||0),
+        p.voted_at?fmt(p.voted_at):'Nije glasovao'
+      ];
+
+      row.eachCell((cell,col)=>{
+        styleCell(cell,{
+          fill:i%2?{
+            type:'pattern',pattern:'solid',
+            fgColor:{argb:'FF'+light}
+          }:undefined,
+          alignment:{horizontal:col===1||col===4||col===5?'center':'left'}
+        });
+      });
+
+      row.getCell(4).numFmt='0.0000"%"';
+      row.height=25;
+    });
+
+    ws2.autoFilter={
+      from:{row:9,column:1},
+      to:{row:9+Math.max(people.length,1),column:5}
+    };
+
+    ws2.views=[{
+      state:'frozen',
+      ySplit:9,
+      showGridLines:false
+    }];
+
+    ws2.pageSetup={
+      paperSize:9,
+      orientation:'landscape',
+      fitToPage:true,
+      fitToWidth:1,
+      fitToHeight:0
+    };
+
+    // PREUZIMANJE
+
+    const safeName=(v.title||'glasanje')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-zA-Z0-9_-]+/g,'-')
+      .replace(/^-|-$/g,'');
+
+    const buffer=await wb.xlsx.writeBuffer();
+
+    const file=new Blob([buffer],{
+      type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url=URL.createObjectURL(file);
+    const a=document.createElement('a');
+
+    a.href=url;
+    a.download=`rezultati-glasanja-${safeName||id}.xlsx`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+  }catch(error){
+    console.error(error);
+    alert('Greška pri izradi Excel izvještaja: '+error.message);
+  }
+}
+
+
 async function closeVote(id){if(!confirm('Zatvoriti glasanje?'))return;let {error}=await sb.from('votes').update({status:'closed'}).eq('id',id);if(error)alert(error.message);else render()}
 function inviteMember(){modal('Pozovi suvlasnika',`<form onsubmit="sendInvite(event)"><div class="field"><label>E-mail adresa</label><input name="email" type="email" required></div><div class="field"><label>Stan</label><input name="unit_label" required placeholder="npr. Stan 3"></div><div class="field"><label>Ime i prezime</label><input name="display_name" required></div><div class="field"><label>Suvlasnički udio (%)</label><input name="share_percent" type="number" min="0" max="100" step="0.0001" required></div><div class="field"><label>Uloga</label><select name="role"><option value="owner">Suvlasnik</option><option value="admin">Administrator</option></select></div><button class="btn">Pošalji poziv</button></form><p class="meta">Poziv se šalje putem zaštićene Edge Function koja koristi service role na poslužitelju. Tajni ključ nikada ne smije biti u pregledniku.</p>`)}
 async function sendInvite(e){e.preventDefault();let f=new FormData(e.target);let {data:{session}}=await sb.auth.getSession();let res=await fetch(`${SUPABASE_CONFIG.url}/functions/v1/invite-member`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`,'apikey':SUPABASE_CONFIG.anonKey},body:JSON.stringify({email:f.get('email'),unit_label:f.get('unit_label'),display_name:f.get('display_name'),share_percent:Number(f.get('share_percent')),role:f.get('role'),building_id:buildingId})});let j=await res.json();if(!res.ok){alert(j.error||'Poziv nije uspio');return}closeModal();alert('Poziv je poslan.');render()}
 function editMember(id,unit,name,share){modal('Uredi suvlasnika',`<form onsubmit="updateMember(event,'${id}')"><div class="field"><label>Stan</label><input name="unit" value="${unit}" required></div><div class="field"><label>Ime</label><input name="name" value="${name}" required></div><div class="field"><label>Udio (%)</label><input name="share" type="number" min="0" max="100" step="0.0001" value="${share}" required></div><button class="btn">Spremi promjene</button></form>`)}
 async function updateMember(e,id){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('members').update({unit_label:f.get('unit'),display_name:f.get('name'),share_percent:Number(f.get('share'))}).eq('id',id);if(error)alert(error.message);else{closeModal();render()}}
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
-async function makeReport(){let id=$('reportVote').value;if(!id)return;let {data,error}=await sb.rpc('vote_results',{p_vote_id:id});if(error){alert(error.message);return}let {data:v}=await sb.from('votes').select('*').eq('id',id).single();const {jsPDF}=window.jspdf;let pdf=new jsPDF();pdf.setFont('helvetica','bold');pdf.setFontSize(17);pdf.text('SUVLASNIK PRO – IZVJESTAJ GLASANJA',14,18);pdf.setFont('helvetica','normal');pdf.setFontSize(11);pdf.text('Put Skalica 12, Split',14,27);pdf.text('Predmet: '+v.title,14,38);pdf.text('Vrsta: '+v.vote_type+' | Status: '+v.status,14,46);let y=61;pdf.setFont('helvetica','bold');pdf.text('Opcija',14,y);pdf.text('Broj glasova',105,y);pdf.text('Udio (%)',155,y);y+=8;pdf.setFont('helvetica','normal');data.forEach(r=>{pdf.text(String(r.option_label),14,y);pdf.text(String(r.votes_count),110,y);pdf.text(Number(r.share_percent).toFixed(4),155,y);y+=8});pdf.text('Napomena: izvjestaj je evidencijski prikaz podataka iz aplikacije; pravnu valjanost odluke treba provjeriti zasebno.',14,y+12,{maxWidth:180});pdf.save('izvjestaj-glasanja.pdf')}
+
+function openVoteReportWindow(){
+  const win=window.open('', '_blank');
+  if(!win){
+    alert('Preglednik je blokirao novi prozor. Dopustite skočne prozore za ovu stranicu.');
+    return null;
+  }
+  return win;
+}
+
+async function printVoteReport(id,win){
+  if(!id || !win) return;
+
+  const {data:v,error:ev}=await sb
+    .from('votes')
+    .select('*')
+    .eq('id',id)
+    .single();
+
+  if(ev){
+    win.close();
+    alert(ev.message);
+    return;
+  }
+
+  const {data:totals,error:e1}=await sb.rpc(
+    'vote_results',
+    {p_vote_id:id}
+  );
+
+  if(e1){
+    win.close();
+    alert(e1.message);
+    return;
+  }
+
+  const {data:people,error:e2}=await sb.rpc(
+    'vote_individual_results',
+    {p_vote_id:id}
+  );
+
+  if(e2){
+    win.close();
+    alert(e2.message);
+    return;
+  }
+
+  const fmt=s=>s
+    ?new Date(s).toLocaleString('hr-HR')
+    :'Nije određeno';
+
+  const aggregate=totals.map(r=>`
+    <tr>
+      <td>${esc(r.option_label||'')}</td>
+      <td>${Number(r.votes_count||0)}</td>
+      <td>${Number(r.share_percent||0).toFixed(4)}%</td>
+    </tr>
+  `).join('');
+
+  const individual=people.map(p=>`
+    <tr>
+      <td>${esc(p.unit_label||'')}</td>
+      <td>${esc(p.display_name||'')}</td>
+      <td>${esc(p.option_label||'Nije glasovao')}</td>
+      <td>${Number(p.share_percent||0).toFixed(4)}%</td>
+      <td>${p.voted_at?fmt(p.voted_at):'—'}</td>
+    </tr>
+  `).join('');
+
+  const html=`
+  <!DOCTYPE html>
+  <html lang="hr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Izvještaj glasanja - ${esc(v.title||'')}</title>
+    <style>
+      body{
+        font-family:Arial,sans-serif;
+        color:#222;
+        margin:25px;
+        font-size:12px;
+      }
+      h1{font-size:20px;margin-bottom:5px}
+      h2{font-size:16px;margin-top:25px}
+      .info{margin:8px 0;line-height:1.6}
+      .description{
+        border:1px solid #ccc;
+        padding:10px;
+        white-space:pre-wrap;
+        line-height:1.5;
+      }
+      table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:10px;
+      }
+      th,td{
+        border:1px solid #999;
+        padding:7px;
+        text-align:left;
+        vertical-align:top;
+      }
+      th{background:#eee}
+      thead{display:table-header-group}
+      tr{page-break-inside:avoid}
+      .note{margin-top:25px;font-size:10px}
+      @page{size:A4 landscape;margin:15mm}
+      @media print{
+        body{margin:0}
+        .no-print{display:none}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-brand">
+  <img id="reportLogo"
+    src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png"
+    alt="SUVLASNIK PRO">
+  <div>
+    <h1>SUVLASNIK PRO – IZVJEŠTAJ GLASANJA</h1>
+    <div>Put Skalica 12, Split</div>
+  </div>
+</div>
+.report-brand{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  border-bottom:3px solid #17365d;
+  padding-bottom:14px;
+  margin-bottom:20px;
+}
+
+.report-brand img{
+  width:95px;
+  height:75px;
+  object-fit:contain;
+}
+
+.report-brand h1{
+  margin:0 0 5px;
+  color:#17365d;
+}
+    
+
+    <div class="info">
+      <b>Naslov glasanja:</b> ${esc(v.title||'')}<br>
+      <b>Vrsta:</b> ${esc(v.vote_type||'')}<br>
+      <b>Status:</b> ${esc(v.status||'')}<br>
+      <b>Razdoblje od:</b> ${fmt(v.opens_at)}<br>
+      <b>Razdoblje do:</b> ${fmt(v.closes_at)}
+    </div>
+
+    <h2>Opis glasanja</h2>
+    <div class="description">${esc(v.description||'Bez opisa')}</div>
+
+    <h2>Ukupni rezultati</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Opcija</th>
+          <th>Broj glasova</th>
+          <th>Udio (%)</th>
+        </tr>
+      </thead>
+      <tbody>${aggregate}</tbody>
+    </table>
+
+    <h2>Pojedinačni glasovi suvlasnika</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Stan</th>
+          <th>Suvlasnik</th>
+          <th>Glas</th>
+          <th>Udio (%)</th>
+          <th>Vrijeme glasanja</th>
+        </tr>
+      </thead>
+      <tbody>${individual}</tbody>
+    </table>
+
+    <div class="note">
+      Izvještaj je evidencijski prikaz podataka iz aplikacije.
+      Pravnu valjanost odluke treba provjeriti zasebno.
+    </div>
+
+    <button class="no-print" onclick="window.print()">
+      Ispiši / Spremi kao PDF
+    </button>
+  </body>
+  </html>`;
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  const logo=win.document.getElementById('reportLogo');
+
+if(logo && !logo.complete){
+  await new Promise(resolve=>{
+    logo.onload=resolve;
+    logo.onerror=resolve;
+  });
+}
+
+  win.focus();
+  setTimeout(()=>win.print(),700);
+}
+
+async function exportVotePDF(id){
+  const win=openVoteReportWindow();
+  if(!win) return;
+  await printVoteReport(id,win);
+}
+
+async function makeReport(){
+  const id=$('reportVote').value;
+  if(!id) return;
+
+  const win=openVoteReportWindow();
+  if(!win) return;
+
+  await printVoteReport(id,win);
+}
 $('loginForm').addEventListener('submit',e=>{if(!configured){e.preventDefault();msg('Najprije konfigurirajte Supabase u config.js i objavite aplikaciju na HTTPS hostingu.')}});boot();
 </script>
 </body></html>
