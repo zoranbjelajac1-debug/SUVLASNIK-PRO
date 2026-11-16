@@ -37,6 +37,32 @@
 /* --- mobilni popravci --- */
 .home-tile>span:last-child{min-width:0;overflow-wrap:anywhere;word-break:break-word;line-height:1.25}
 @media(max-width:760px){
+  /* Zaglavlje na mobitelu: ime i odjava idu u novi red, poravnato lijevo */
+  .toprow{flex-direction:column;align-items:flex-start;gap:12px}
+  .top-actions{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px}
+  .pill{max-width:calc(100% - 85px);white-space:normal;text-align:left;word-break:break-word;line-height:1.2;border-radius:12px;padding:7px 12px;font-size:12px}
+  .logout{padding:7px 10px;font-size:12px;white-space:nowrap}
+
+  /* Ostatak mobilnog CSS-a */
+  .home-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .home-tile{padding:11px;min-height:76px;font-size:13px}
+  .home-tile .symbol{font-size:18px;padding:7px}
+  .layout{display:block;padding:14px 12px 80px}
+  .side{display:none}
+  .top{padding:16px 16px 21px}
+  .welcome h1{font-size:21px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card,.item{padding:12px}
+  .pagehead h2{font-size:19px}
+  .mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px #12345a10}
+  .mobile button{border:0;background:transparent;color:#65748a;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .mobile button.active{color:var(--blue);font-weight:800}
+  .mobile b{font-size:18px}
+  .formgrid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .pagehead .btn{font-size:12px;padding:8px 10px}
+}
+@media(max-width:760px){
   /* zaglavlje: ništa ne izlazi van ekrana */
   .toprow{flex-wrap:wrap;row-gap:10px}
   .brandmark{flex:1 1 auto;min-width:0}
@@ -125,7 +151,7 @@
     SUVLASNIK PRO
     <small>DIGITALNA UPRAVA ZGRADE</small>
   </div>
-</div><div style="display:flex;align-items:center;gap:8px"><span class="pill" id="userPill">ONLINE</span><button class="logout" onclick="logout()">Odjava ↗</button></div></div><div class="welcome"><h1>Put Skalica 12</h1><p>Split · Informacije i upravljanje zgradom</p></div></header>
+</div><div class="top-actions"><span class="pill" id="userPill">ONLINE</span><button class="logout" onclick="logout()">Odjava ↗</button></div></div><div class="welcome"><h1>Put Skalica 12</h1><p>Split · Informacije i upravljanje zgradom</p></div></header>
  <div class="layout"><aside class="side" id="side"></aside><main class="main" id="view"></main></div><nav class="mobile" id="mobile"></nav>
  <div class="footer">SUVLASNIK PRO 1.2 PRO · Zaštićeni pristup · Put Skalica 12</div>
 </div><div id="modalRoot"></div>
@@ -314,7 +340,7 @@ async function render(){if(page==='admin'&&!isAdmin())page='home';nav();const v=
  if(page==='votes'){let a=await rows('votes');v.innerHTML=head('Glasovanja','Glasovi i rezultati po suvlasničkim udjelima',isAdmin()?'<button class="btn" onclick="newVote()">＋ Novo glasovanje</button>':'')+a.map(voteCard).join('')||empty('Nema glasovanja')}
  if(page==='docs'||page==='archive'){let a=await rows('documents');if(page==='archive')a=a.filter(x=>['odluka','zapisnik'].includes(x.category));v.innerHTML=head(page==='docs'?'Dokumentacija':'Arhiva odluka i zapisnika',page==='docs'?'Privatna pohrana dokumenata zgrade':'Automatski popis arhiviranih odluka i zapisnika',isAdmin()?'<button class="btn" onclick="newDoc()">＋ Učitaj dokument</button>':'')+a.map(docCard).join('')||empty('Nema dokumenata')}
  if(page==='admin'&&!isAdmin()){page='home';return render()}
- if(page==='admin'){let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');if(error)throw error;v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+(isAdmin()?`<div class="card"><div class="line"><h3>Registar suvlasnika</h3><button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button></div><div class="tablewrap"><table><thead><tr><th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.unit_label)}</td><td>${esc(x.display_name)}</td><td>${x.share_percent??'—'}</td><td>${esc(x.role)}</td><td>${x.active?'Aktivan':'Neaktivan'}</td><td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}')">Uredi</button></td></tr>`).join('')}</tbody></table></div><p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p></div><div class="card"><h3>Izvještaj o glasovanju</h3><p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p><button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button></div>`:note('Samo administrator ima pristup registru i postavkama.'))}
+ if(page==='admin'){let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');if(error)throw error;v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+(isAdmin()?`<div class="card"><div class="line"><h3>Registar suvlasnika</h3><button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button></div><div class="tablewrap"><table><thead><tr><th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.unit_label)}</td><td>${esc(x.display_name)}</td><td>${x.share_percent??'—'}</td><td>${x.role==='admin'?'Predstavnik suvlasnika':x.role==='owner'?'Suvlasnik':esc(x.role)}</td><td>${x.active?'Aktivan':'Neaktivan'}</td><td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}')">Uredi</button></td></tr>`).join('')}</tbody></table></div><p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p></div><div class="card"><h3>Izvještaj o glasovanju</h3><p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p><button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button></div>`:note('Samo administrator ima pristup registru i postavkama.'))}
  }catch(e){v.innerHTML=note('Greška pri učitavanju: '+esc(e.message))}}
 function issueCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.location||'Zajednički prostor')} · ${d(x.created_at)}</div></div><span class="tag ${x.status==='riješeno'?'green':x.status==='u obradi'?'amber':'red'}">${esc(x.status)}</span></div><p>${esc(x.description)}</p><div class="actions">${x.photo_path?`<button class="btn secondary small" onclick="downloadFile('${esc(x.photo_path)}')">Preuzmi fotografiju</button>`:''}${isAdmin()?`<button class="btn secondary small" onclick="changeIssue('${x.id}','${x.status}')">Promijeni status</button><button class="btn danger small" onclick="deleteIssue('${x.id}','${esc(x.title)}','${esc(x.photo_path||'')}')">Obriši</button>`:''}</div></article>`}
 function voteCard(x){
@@ -601,7 +627,7 @@ async function exportVoteExcel(id){
 }
 
 async function closeVote(id){if(!confirm('Zatvoriti glasanje?'))return;let {error}=await sb.from('votes').update({status:'closed'}).eq('id',id);if(error)alert(error.message);else render()}
-function inviteMember(){modal('Pozovi suvlasnika',`<form onsubmit="sendInvite(event)"><div class="field"><label>E-mail adresa</label><input name="email" type="email" required></div><div class="field"><label>Stan</label><input name="unit_label" required placeholder="npr. Stan 3"></div><div class="field"><label>Ime i prezime</label><input name="display_name" required></div><div class="field"><label>Suvlasnički udio (%)</label><input name="share_percent" type="number" min="0" max="100" step="0.0001" required></div><div class="field"><label>Uloga</label><select name="role"><option value="owner">Suvlasnik</option><option value="admin">Administrator</option></select></div><button class="btn">Pošalji poziv</button></form><p class="meta">Poziv se šalje putem zaštićene Edge Function koja koristi service role na poslužitelju. Tajni ključ nikada ne smije biti u pregledniku.</p>`)}
+function inviteMember(){modal('Pozovi suvlasnika',`<form onsubmit="sendInvite(event)"><div class="field"><label>E-mail adresa</label><input name="email" type="email" required></div><div class="field"><label>Stan</label><input name="unit_label" required placeholder="npr. Stan 3"></div><div class="field"><label>Ime i prezime</label><input name="display_name" required></div><div class="field"><label>Suvlasnički udio (%)</label><input name="share_percent" type="number" min="0" max="100" step="0.0001" required></div><div class="field"><label>Uloga</label><select name="role"><option value="owner">Suvlasnik</option><option value="admin">Predstavnik suvlasnika</option></select></div><button class="btn">Pošalji poziv</button></form><p class="meta">Poziv se šalje putem zaštićene Edge Function koja koristi service role na poslužitelju. Tajni ključ nikada ne smije biti u pregledniku.</p>`)}
 async function sendInvite(e){e.preventDefault();let f=new FormData(e.target);let {data:{session}}=await sb.auth.getSession();let res=await fetch(`${SUPABASE_CONFIG.url}/functions/v1/invite-member`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`,'apikey':SUPABASE_CONFIG.anonKey},body:JSON.stringify({email:f.get('email'),unit_label:f.get('unit_label'),display_name:f.get('display_name'),share_percent:Number(f.get('share_percent')),role:f.get('role'),building_id:buildingId})});let j=await res.json();if(!res.ok){alert(j.error||'Poziv nije uspio');return}closeModal();alert('Poziv je poslan.');render()}
 function editMember(id,unit,name,share){modal('Uredi suvlasnika',`<form onsubmit="updateMember(event,'${id}')"><div class="field"><label>Stan</label><input name="unit" value="${unit}" required></div><div class="field"><label>Ime</label><input name="name" value="${name}" required></div><div class="field"><label>Udio (%)</label><input name="share" type="number" min="0" max="100" step="0.0001" value="${share}" required></div><button class="btn">Spremi promjene</button></form>`)}
 async function updateMember(e,id){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('members').update({unit_label:f.get('unit'),display_name:f.get('name'),share_percent:Number(f.get('share'))}).eq('id',id);if(error)alert(error.message);else{closeModal();render()}}
