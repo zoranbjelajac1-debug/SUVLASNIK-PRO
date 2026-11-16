@@ -30,10 +30,35 @@
 .brand small{display:block;font-size:10px;letter-spacing:1.4px;opacity:.72}.pill{font-size:11px;padding:6px 10px;border-radius:20px;background:#ffffff20;border:1px solid #ffffff35}.welcome{margin-top:20px}.welcome h1{margin:0;font-size:24px}.welcome p{margin:3px 0 0;color:#d4e2f1;font-size:13px}.layout{display:grid;grid-template-columns:220px 1fr;gap:21px;padding:21px}.side{background:#fff;border:1px solid var(--line);border-radius:15px;padding:9px;height:max-content;position:sticky;top:14px}.nav{display:block;width:100%;border:0;background:transparent;text-align:left;padding:11px;border-radius:9px;color:#536176;font-weight:650}.nav.active,.nav:hover{background:#eaf1fb;color:var(--navy)}.nav span{display:inline-block;width:27px}.main{min-width:0}.pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:1px 0 16px}.pagehead h2{margin:0;font-size:22px}.sub,.meta{color:var(--muted);font-size:12px}.sub{margin-top:4px}.btn{border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 14px;font-weight:700}.btn.secondary{background:#e9eff7;color:var(--navy)}.btn.danger{background:#fff0f1;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card,.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);margin-bottom:10px}.kpi{display:flex;justify-content:space-between;align-items:center}.kpi b{font-size:26px;color:var(--navy)}.kpi small{display:block;color:var(--muted)}.symbol{font-size:22px;background:#edf3fb;padding:9px;border-radius:11px}.notice{padding:12px;border-radius:11px;background:#fff7e5;border:1px solid #f1dfb8;color:#74551d;font-size:12px;margin:0 0 13px}.good{background:#e9f7ef;border-color:#c6ead5;color:#176341}.item h3{font-size:15px;margin:0 0 4px}.item p{font-size:13px;white-space:pre-wrap}.tag{font-size:11px;padding:4px 8px;border-radius:18px;background:#edf2f8;color:#4c5b70;font-weight:750}.tag.green{background:#e5f6ee;color:#16704f}.tag.amber{background:#fff4dc;color:#936014}.tag.red{background:#ffebed;color:#a82d3a}.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}.field label{font-size:12px;font-weight:750;color:#536176}.field input,.field textarea,.field select{width:100%;border:1px solid #d8e0eb;border-radius:9px;padding:10px;background:#fff}.field textarea{min-height:85px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{text-align:center;padding:28px;color:var(--muted);border:1px dashed #cbd5e1;background:#fff;border-radius:13px}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:18px;font-size:12px}.tab.active{background:var(--navy);color:white}.progress{height:7px;background:#edf1f6;border-radius:9px;overflow:hidden}.progress span{display:block;height:100%;background:var(--blue)}.home-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 24px}
 .home-tile{display:flex;align-items:center;gap:12px;text-align:left;width:100%;min-height:86px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);color:var(--ink);font-weight:750}
 .home-tile .symbol{flex:0 0 auto}.home-tile small{display:block;color:var(--muted);font-weight:500;margin-top:3px}
-.item p.notice-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere;white-space:pre-wrap}
+.item p.notice-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;overflow-wrap:anywhere;white-space:pre-wrap}
 .logout{background:#ffffff20;color:#fff;border:1px solid #ffffff55;border-radius:9px;padding:8px 11px;font-weight:700}
 @media(max-width:760px){.home-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.home-tile{padding:11px;min-height:76px;font-size:13px}.home-tile .symbol{font-size:18px;padding:7px}} 
 .mobile{display:none}.authwrap{max-width:440px;margin:9vh auto;padding:18px}.authcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow)}.authcard h2{margin:0 0 4px}.footer{text-align:center;color:#91a0b3;font-size:11px;padding:20px}.modalback{position:fixed;inset:0;background:#0c1d33a8;display:flex;align-items:center;justify-content:center;padding:15px;z-index:20}.modal{width:min(580px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:17px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}.close{border:0;background:#eef2f7;border-radius:8px;padding:7px 10px}.hide{display:none!important}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}th{background:#f4f7fb}.file{font-size:13px;color:var(--blue)}@media(max-width:760px){.layout{display:block;padding:14px 12px 80px}.side{display:none}.top{padding:16px 16px 21px}.welcome h1{font-size:21px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card,.item{padding:12px}.pagehead h2{font-size:19px}.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:10;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px #12345a10}.mobile button{border:0;background:transparent;color:#65748a;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}.mobile button.active{color:var(--blue);font-weight:800}.mobile b{font-size:18px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.pagehead .btn{font-size:12px;padding:8px 10px}}
+/* --- mobilni popravci --- */
+.home-tile>span:last-child{min-width:0;overflow-wrap:anywhere;word-break:break-word;line-height:1.25}
+@media(max-width:760px){
+  /* zaglavlje: ništa ne izlazi van ekrana */
+  .toprow{flex-wrap:wrap;row-gap:10px}
+  .brandmark{flex:1 1 auto;min-width:0}
+  .brandmark img{width:44px;height:44px;padding:3px}
+  .brand{min-width:0;font-size:16px;line-height:1.15}
+  .brand small{font-size:8px;letter-spacing:.8px}
+  .toprow>div:last-child{flex:0 0 auto;margin-left:auto}
+  .pill{max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .logout{padding:7px 10px;font-size:12px;white-space:nowrap}
+
+  /* pločice modula: tekst se lomi, ne prelazi okvir */
+  .home-tiles{gap:8px}
+  .home-tile{padding:10px;gap:9px;font-size:12.5px;overflow:hidden}
+  .home-tile .symbol{font-size:16px;padding:6px;border-radius:9px}
+  .home-tile small{font-size:11px;line-height:1.2}
+
+  /* donja traka: svih 6 gumba stane u širinu */
+  .mobile{overflow-x:auto;overflow-y:hidden;gap:2px}
+  .mobile button{flex:1 1 0;min-width:0;padding:4px 2px;font-size:9.5px;line-height:1.15}
+  .mobile button b{font-size:17px}
+  .mobile .mlabel{display:block;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -135,7 +160,18 @@ function closeModal(){$('modalRoot').innerHTML=''}
 function isAdmin(){return profile?.role==='admin'}
 function go(p){if(p==='admin'&&!isAdmin()){alert('Samo administrator ima pristup ovom modulu.');return}page=p;render()}
 async function logout(){if(!sb)return;const {error}=await sb.auth.signOut();if(error){alert('Odjava nije uspjela: '+error.message);return}page='home';}
-function nav(){let visible=NAV.filter(x=>isAdmin()||x[0]!=='admin');let h=visible.map(([id,ic,t])=>`<button class="nav ${page===id?'active':''}" onclick="go('${id}')"><span>${ic}</span>${t}</button>`).join('');$('side').innerHTML=h;$('mobile').innerHTML=visible.filter(x=>x[0]!=='archive').map(([id,ic,t])=>`<button class="${page===id?'active':''}" onclick="go('${id}')"><b>${ic}</b>${t}</button>`).join('')}
+function nav(){
+  const visible=NAV.filter(x=>isAdmin()||x[0]!=='admin');
+  const short=t=>t==='Administracija'?'Admin':t;   // kraća oznaka za mobilnu traku
+
+  $('side').innerHTML=visible.map(([id,ic,t])=>
+    `<button class="nav ${page===id?'active':''}" onclick="go('${id}')"><span>${ic}</span>${t}</button>`
+  ).join('');
+
+  $('mobile').innerHTML=visible.filter(x=>x[0]!=='archive').map(([id,ic,t])=>
+    `<button class="${page===id?'active':''}" onclick="go('${id}')"><b>${ic}</b><span class="mlabel">${short(t)}</span></button>`
+  ).join('');
+}
 async function boot(){if(!configured){msg('Nedostaje konfiguracija Supabase projekta. Pogledajte README i config.js.');return}sb=window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey);const {data:{session}}=await sb.auth.getSession();if(session)await enter(session.user);$('loginForm').addEventListener('submit',login);sb.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
     showPasswordReset();
@@ -324,10 +360,72 @@ function voteCard(x){
     </article>
   `;
 }function docCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)} · ${d(x.created_at)}</div></div><span class="tag">${esc(x.category)}</span></div><p>${esc(x.description||'')}</p><div class="actions"><button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button>${isAdmin()?`<button class="btn danger small" onclick="deleteDocument('${x.id}','${esc(x.title)}','${esc(x.storage_path||'')}')">Obriši</button>`:''}</div></article>`}
-function noticeCard(x){return `<article class="item"><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)}</div><p class="notice-preview" id="notice-${x.id}">${esc(x.body)}</p><div class="actions"><button class="btn secondary small" onclick="toggleNotice('${x.id}')">Prikaži cijelu obavijest</button>${isAdmin()?`<button class="btn danger small" onclick="deleteAnnouncement('${x.id}','${esc(x.title)}')">Obriši</button>`:''}</div></article>`}
-function toggleNotice(id){const p=$('notice-'+id);if(!p)return;const expanded=p.dataset.expanded==='1';p.dataset.expanded=expanded?'0':'1';p.style.display=expanded?'-webkit-box':'block';p.style.webkitLineClamp=expanded?'3':'unset';const b=p.parentElement.querySelector('button');if(b)b.textContent=expanded?'Prikaži cijelu obavijest':'Sažmi obavijest'}
-function newNotice(){modal('Nova obavijest',`<form onsubmit="saveNotice(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Tekst</label><textarea name="body" required></textarea></div><button class="btn">Objavi</button></form>`)}
-async function saveNotice(e){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('announcements').insert({building_id:buildingId,title:f.get('title'),body:f.get('body'),created_by:user.id});if(error)alert(error.message);else{closeModal();render()}}
+function noticeCard(x){
+  let attach='';
+  if(x.attachment_path){
+    const nm=x.attachment_name||'Prilog';
+    const short=nm.length>24?nm.slice(0,21)+'…':nm;
+    attach=`<button class="btn secondary small" title="${esc(nm)}" onclick="downloadFile('${esc(x.attachment_path)}')">📎 ${esc(short)}</button>`;
+  }
+  return `<article class="item">
+    <h3>${esc(x.title)}</h3>
+    <div class="meta">${d(x.created_at)}</div>
+    <p class="notice-preview" id="notice-${x.id}">${esc(x.body)}</p>
+    <div class="actions">
+      <button class="btn secondary small" onclick="toggleNotice('${x.id}')">Prikaži cijelu obavijest</button>
+      ${attach}
+      ${isAdmin()?`<button class="btn danger small" onclick="deleteAnnouncement('${x.id}','${esc(x.title)}','${esc(x.attachment_path||'')}')">Obriši</button>`:''}
+    </div>
+  </article>`;
+}
+function toggleNotice(id){const p=$('notice-'+id);if(!p)return;const expanded=p.dataset.expanded==='1';p.dataset.expanded=expanded?'0':'1';p.style.display=expanded?'-webkit-box':'block';p.style.webkitLineClamp=expanded?'3':'unset';p.style.lineClamp=expanded?'3':'unset';const b=p.parentElement.querySelector('button');if(b)b.textContent=expanded?'Prikaži cijelu obavijest':'Sažmi obavijest'}
+function newNotice(){modal('Nova obavijest',`
+<form onsubmit="saveNotice(event)">
+  <div class="field"><label>Naslov</label><input name="title" required></div>
+  <div class="field"><label>Tekst</label><textarea name="body" required></textarea></div>
+  <div class="field">
+    <label>Prilog (opcionalno)</label>
+    <input type="file" name="attachment"
+      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.gif,image/*">
+    <div class="meta" style="margin-top:4px">Dopušteno: PDF, Word, Excel, PowerPoint, slike. Maks. 20 MB.</div>
+  </div>
+  <button class="btn">Objavi</button>
+</form>`)}
+async function saveNotice(e){
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const file=f.get('attachment');
+  let path=null, name=null;
+
+  if(file && file.size){
+    if(file.size > 20*1024*1024){
+      alert('Datoteka je prevelika (maks. 20 MB).');
+      return;
+    }
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    path=`${buildingId}/announcements/${crypto.randomUUID()}-${safe}`;
+    const up=await sb.storage.from('building-files').upload(path,file,{upsert:false});
+    if(up.error){alert('Prijenos priloga nije uspio: '+up.error.message);return}
+    name=file.name;
+  }
+
+  const {error}=await sb.from('announcements').insert({
+    building_id:buildingId,
+    title:f.get('title'),
+    body:f.get('body'),
+    created_by:user.id,
+    attachment_path:path,
+    attachment_name:name
+  });
+
+  if(error){
+    if(path) await sb.storage.from('building-files').remove([path]);
+    alert(error.message);
+  } else {
+    closeModal();
+    render();
+  }
+}
 function newIssue(){modal('Nova prijava problema',`<form onsubmit="saveIssue(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Lokacija</label><select name="location"><option>Ulaz</option><option>Stubište</option><option>Podrum</option><option>Krov</option><option>Okućnica</option><option>Drugo</option></select></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Fotografija (opcionalno)</label><input type="file" name="photo" accept="image/*"></div><button class="btn">Pošalji prijavu</button></form>`)}
 async function saveIssue(e){e.preventDefault();let f=new FormData(e.target),file=f.get('photo'),path=null;if(file&&file.size){path=`${buildingId}/issues/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;let up=await sb.storage.from('building-files').upload(path,file,{upsert:false});if(up.error){alert(up.error.message);return}}let {error}=await sb.from('issues').insert({building_id:buildingId,created_by:user.id,title:f.get('title'),description:f.get('description'),location:f.get('location'),photo_path:path});if(error)alert(error.message);else{closeModal();render()}}
 async function changeIssue(id,status){let next=status==='zaprimljeno'?'u obradi':status==='u obradi'?'riješeno':'zaprimljeno';let {error}=await sb.from('issues').update({status:next}).eq('id',id);if(error)alert(error.message);else render()}
@@ -338,7 +436,20 @@ async function downloadFile(path){let {data,error}=await sb.storage.from('buildi
 function confirmDelete(label){return isAdmin()&&confirm(`Jeste li sigurni da želite obrisati ovu stavku?\n\n${label}\n\nOva radnja je trajna.`)}
 async function deleteIssue(id,title,path){if(!confirmDelete(title))return;try{if(path){const r=await sb.storage.from('building-files').remove([path]);if(r.error)throw r.error}const {error}=await sb.from('issues').delete().eq('id',id).eq('building_id',buildingId);if(error)throw error;await render()}catch(e){alert('Brisanje nije uspjelo: '+e.message)}}
 async function deleteDocument(id,title,path){if(!confirmDelete(title))return;try{const {error}=await sb.from('documents').delete().eq('id',id).eq('building_id',buildingId);if(error)throw error;if(path){const r=await sb.storage.from('building-files').remove([path]);if(r.error)alert('Dokument je obrisan iz evidencije, ali datoteka nije uklonjena: '+r.error.message)}await render()}catch(e){alert('Brisanje nije uspjelo: '+e.message)}}
-async function deleteAnnouncement(id,title){if(!confirmDelete(title))return;const {error}=await sb.from('announcements').delete().eq('id',id).eq('building_id',buildingId);if(error){alert('Brisanje nije uspjelo: '+error.message);return}await render()}
+async function deleteAnnouncement(id,title,path){
+  if(!confirmDelete(title)) return;
+  try{
+    const {error}=await sb.from('announcements').delete().eq('id',id).eq('building_id',buildingId);
+    if(error) throw error;
+    if(path){
+      const r=await sb.storage.from('building-files').remove([path]);
+      if(r.error) alert('Obavijest je obrisana, ali prilog nije uklonjen: '+r.error.message);
+    }
+    await render();
+  }catch(e){
+    alert('Brisanje nije uspjelo: '+e.message);
+  }
+}
 async function deleteVote(id,title){if(!confirmDelete(title))return;try{let r=await sb.from('ballots').delete().eq('vote_id',id);if(r.error)throw r.error;r=await sb.from('vote_options').delete().eq('vote_id',id);if(r.error)throw r.error;r=await sb.from('votes').delete().eq('id',id).eq('building_id',buildingId);if(r.error)throw r.error;await render()}catch(e){alert('Brisanje glasovanja nije uspjelo. Provjerite RLS pravila i povezana glasovanja: '+e.message)}}
 
 function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka (zahtijeva pravnu provjeru)</option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasanje</button></form>`)}
