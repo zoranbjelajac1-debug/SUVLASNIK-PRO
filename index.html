@@ -4,6 +4,11 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#12345a"><meta name="description" content="SUVLASNIK PRO – Put Skalica 12, Split">
 <link rel="manifest" href="manifest.json"><title>SUVLASNIK PRO 1.2 PRO</title>
+<!-- Za iOS (iPhone/iPad) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Suvlasnik">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{--navy:#12345a;--blue:#2563eb;--ink:#172337;--muted:#68778c;--bg:#f3f6fa;--line:#e3e9f1;--white:#fff;--green:#12805c;--amber:#a66b12;--red:#bd3945;--shadow:0 8px 26px #142d4b0d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;min-height:100vh}.top{background:linear-gradient(125deg,#102d50,#1c4b7c);color:#fff;padding:19px 22px 25px;border-radius:0 0 23px 23px}.toprow,.head,.line{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:19px;font-weight:850}
@@ -197,20 +202,24 @@ async function enter(u){
   await render();
 }
 
-async function rows(table,order='created_at'){let {data,error}=await sb.from(table).select('*').eq('building_id',buildingId).order(order,{ascending:false});if(error)throw error;return data||[]}
+async function rows(table,order='created_at',select='*'){
+  let {data,error}=await sb.from(table).select(select).eq('building_id',buildingId).order(order,{ascending:false});
+  if(error)throw error;
+  return data||[];
+}
 
 async function render(){
   if(page==='admin'&&!isAdmin())page='home';
   nav(); const v=$('view'); v.innerHTML=note('Učitavanje…');
   try{
     if(page==='home'){
-      let [issues,votes,news,docs]=await Promise.all([rows('issues'),rows('votes'),rows('announcements'),rows('documents')]);
+      let [issues,votes,news,docs]=await Promise.all([rows('issues','created_at','*, members(display_name)'),rows('votes'),rows('announcements'),rows('documents')]);
       cache={issues,votes,news,docs}; let open=issues.filter(x=>x.status!=='riješeno').length,active=votes.filter(x=>x.status==='open').length;
       const tiles=[['votes','☑','Glasovanja','Pregled i glasovanje'],['issues','🔧','Problemi','Prijave i statusi'],['docs','▤','Dokumenti','Dokumentacija zgrade'],['archive','▣','Arhiva','Odluke i zapisnici'],['news','◉','Obavijesti','Važne informacije'],...(isAdmin()?[['admin','⚙','Administracija','Upravljanje zgradom']]:[])];
       v.innerHTML=head('Pregled zgrade','Zajedničke informacije u stvarnom vremenu')+`<div class="grid"><div class="card kpi"><div><b>${esc(profile.unit_label)}</b><small>Vaš stan</small></div><span class="symbol">🏢</span></div><div class="card kpi"><div><b>${active}</b><small>Aktivna glasovanja</small></div><span class="symbol">☑</span></div><div class="card kpi"><div><b>${open}</b><small>Otvorene prijave</small></div><span class="symbol">🔧</span></div></div><h3>Moduli zgrade</h3><div class="home-tiles">${tiles.map(([id,ic,title,desc])=>`<button class="home-tile" onclick="go('${id}')"><span class="symbol">${ic}</span><span>${title}<small>${desc}</small></span></button>`).join('')}</div><h3>Najnovije obavijesti</h3>${news.slice(0,3).map(x=>noticeCard(x)).join('')||empty('Nema obavijesti')}`
     }
     if(page==='news'){let a=await rows('announcements');v.innerHTML=head('Obavijesti','Objave predstavnika suvlasnika',isAdmin()?'<button class="btn" onclick="newNotice()">＋ Nova obavijest</button>':'')+a.map(noticeCard).join('')||empty('Nema obavijesti')}
-    if(page==='issues'){let a=await rows('issues');v.innerHTML=head('Prijave problema','Kvarovi i poteškoće u zajedničkim dijelovima',`<button class="btn" onclick="newIssue()">＋ Nova prijava</button>`)+`<div class="tabs">${['sve','zaprimljeno','u obradi','riješeno'].map(x=>`<button class="tab ${issueFilter===x?'active':''}" onclick="issueFilter='${x}';render()">${x}</button>`).join('')}</div>`+a.filter(x=>issueFilter==='sve'||x.status===issueFilter).map(issueCard).join('')||empty('Nema prijava')}
+    if(page==='issues'){let a=await rows('issues','created_at','*, members(display_name)');v.innerHTML=head('Prijave problema','Kvarovi i poteškoće u zajedničkim dijelovima',`<button class="btn" onclick="newIssue()">＋ Nova prijava</button>`)+`<div class="tabs">${['sve','zaprimljeno','u obradi','riješeno'].map(x=>`<button class="tab ${issueFilter===x?'active':''}" onclick="issueFilter='${x}';render()">${x}</button>`).join('')}</div>`+a.filter(x=>issueFilter==='sve'||x.status===issueFilter).map(issueCard).join('')||empty('Nema prijava')}
     if(page==='votes'){let a=await rows('votes');v.innerHTML=head('Glasovanja','Glasovi i rezultati po suvlasničkim udjelima',isAdmin()?'<button class="btn" onclick="newVote()">＋ Novo glasovanje</button>':'')+a.map(voteCard).join('')||empty('Nema glasovanja')}
     if(page==='docs'||page==='archive'){let a=await rows('documents');if(page==='archive')a=a.filter(x=>['odluka','zapisnik'].includes(x.category));v.innerHTML=head(page==='docs'?'Dokumentacija':'Arhiva odluka i zapisnika',page==='docs'?'Privatna pohrana dokumenata zgrade':'Automatski popis arhiviranih odluka i zapisnika',isAdmin()?'<button class="btn" onclick="newDoc()">＋ Učitaj dokument</button>':'')+a.map(docCard).join('')||empty('Nema dokumenata')}
     if(page==='admin'&&!isAdmin()){page='home';return render()}
@@ -221,14 +230,56 @@ async function render(){
   }catch(e){v.innerHTML=note('Greška pri učitavanju: '+esc(e.message))}
 }
 
-function issueCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.location||'Zajednički prostor')} · ${d(x.created_at)}</div></div><span class="tag ${x.status==='riješeno'?'green':x.status==='u obradi'?'amber':'red'}">${esc(x.status)}</span></div><p>${esc(x.description)}</p><div class="actions">${x.photo_path?`<button class="btn secondary small" onclick="downloadFile('${esc(x.photo_path)}')">Preuzmi fotografiju</button>`:''}${isAdmin()?`<button class="btn secondary small" onclick="changeIssue('${x.id}','${x.status}')">Promijeni status</button><button class="btn danger small" onclick="deleteIssue('${x.id}','${esc(x.title)}','${esc(x.photo_path||'')}')">Obriši</button>`:''}</div></article>`}
+function issueCard(x){
+  const reporter = x.members?.display_name || 'Nepoznat korisnik';
+  const descId = 'issue-desc-' + x.id;
 
+  return `<article class="item">
+    <div class="line">
+      <div>
+        <h3>${esc(x.title)}</h3>
+        <div class="meta">
+          ${esc(x.location||'Zajednički prostor')} · ${d(x.created_at)} · Prijavio: <b>${esc(reporter)}</b>
+        </div>
+      </div>
+      <span class="tag ${x.status==='riješeno'?'green':x.status==='u obradi'?'amber':'red'}">${esc(x.status)}</span>
+    </div>
+    <p class="notice-preview" id="${descId}">${esc(x.description)}</p>
+    <div class="actions">
+      <button class="btn secondary small" data-toggle="${descId}" data-show-text="Prikaži cijeli opis" data-hide-text="Sažmi opis" onclick="togglePreview('${descId}')">Prikaži cijeli opis</button>
+      ${x.photo_path?`<button class="btn secondary small" onclick="downloadFile('${esc(x.photo_path)}')">Preuzmi fotografiju</button>`:''}
+      ${isAdmin()?`<button class="btn secondary small" onclick="changeIssue('${x.id}','${x.status}')">Promijeni status</button><button class="btn danger small" onclick="deleteIssue('${x.id}','${esc(x.title)}','${esc(x.photo_path||'')}')">Obriši</button>`:''}
+    </div>
+  </article>`;
+}
 function voteCard(x){
   return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${x.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa'}</div></div><span class="tag ${x.status==='open'?'green':'amber'}">${x.status==='open'?'Otvoreno':'Zatvoreno'}</span></div><p>${esc(x.description||'Bez opisa')}</p><div class="meta" style="margin:12px 0"><div><b>Početak glasovanja:</b> ${dt(x.opens_at)}</div><div><b>Rok za glasovanje:</b> ${dt(x.closes_at)}</div></div><div class="actions">${x.status==='open'?`<button class="btn" onclick="castVote('${x.id}')">Glasaj</button>`:''}<button class="btn secondary" onclick="showResults('${x.id}')">Rezultati</button>${isAdmin()?`<button class="btn secondary" onclick="closeVote('${x.id}')">Zatvori</button><button class="btn danger small" onclick="deleteVote('${x.id}','${esc(x.title)}')">Obriši</button>`:''}</div></article>`;
 }
 
-function docCard(x){return `<article class="item"><div class="line"><div><h3>${esc(x.title)}</h3><div class="meta">${esc(x.category)} · ${d(x.created_at)}</div></div><span class="tag">${esc(x.category)}</span></div><p>${esc(x.description||'')}</p><div class="actions"><button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button>${isAdmin()?`<button class="btn danger small" onclick="deleteDocument('${x.id}','${esc(x.title)}','${esc(x.storage_path||'')}')">Obriši</button>`:''}</div></article>`}
+function docCard(x){
+  const descId = 'doc-desc-' + x.id;
+  const hasDesc = x.description && x.description.trim().length > 0;
 
+  return `<article class="item">
+    <div class="line">
+      <div>
+        <h3>${esc(x.title)}</h3>
+        <div class="meta">${esc(x.category)} · ${d(x.created_at)}</div>
+      </div>
+      <span class="tag">${esc(x.category)}</span>
+    </div>
+    
+    <p class="notice-preview" id="${descId}">${esc(x.description||'Bez opisa')}</p>
+    
+    <div class="actions">
+      ${hasDesc ? `<button class="btn secondary small" data-toggle="${descId}" data-show-text="Prikaži cijeli opis" data-hide-text="Sažmi opis" onclick="togglePreview('${descId}')">Prikaži cijeli opis</button>` : ''}
+      
+      <button class="btn secondary small" onclick="downloadFile('${esc(x.storage_path)}')">Preuzmi datoteku</button>
+      
+      ${isAdmin()?`<button class="btn danger small" onclick="deleteDocument('${x.id}','${esc(x.title)}','${esc(x.storage_path||'')}')">Obriši</button>`:''}
+    </div>
+  </article>`;
+}
 function noticeCard(x){
   let attach='';
   if(x.attachment_path){
@@ -236,11 +287,29 @@ function noticeCard(x){
     const short=nm.length>24?nm.slice(0,21)+'…':nm;
     attach=`<button class="btn secondary small" title="${esc(nm)}" onclick="downloadFile('${esc(x.attachment_path)}')">📎 ${esc(short)}</button>`;
   }
-  return `<article class="item"><h3>${esc(x.title)}</h3><div class="meta">${d(x.created_at)}</div><p class="notice-preview" id="notice-${x.id}">${esc(x.body)}</p><div class="actions"><button class="btn secondary small" onclick="toggleNotice('${x.id}')">Prikaži cijelu obavijest</button>${attach}${isAdmin()?`<button class="btn danger small" onclick="deleteAnnouncement('${x.id}','${esc(x.title)}','${esc(x.attachment_path||'')}')">Obriši</button>`:''}</div></article>`;
+  return `<article class="item">
+    <h3>${esc(x.title)}</h3>
+    <div class="meta">${d(x.created_at)}</div>
+    <p class="notice-preview" id="notice-${x.id}">${esc(x.body)}</p>
+    <div class="actions">
+      <button class="btn secondary small" data-toggle="notice-${x.id}" data-show-text="Prikaži cijelu obavijest" data-hide-text="Sažmi obavijest" onclick="togglePreview('notice-${x.id}')">Prikaži cijelu obavijest</button>
+      ${attach}
+      ${isAdmin()?`<button class="btn danger small" onclick="deleteAnnouncement('${x.id}','${esc(x.title)}','${esc(x.attachment_path||'')}')">Obriši</button>`:''}
+    </div>
+  </article>`;
 }
 
-function toggleNotice(id){const p=$('notice-'+id);if(!p)return;const expanded=p.dataset.expanded==='1';p.dataset.expanded=expanded?'0':'1';p.style.display=expanded?'-webkit-box':'block';p.style.webkitLineClamp=expanded?'3':'unset';p.style.lineClamp=expanded?'3':'unset';const b=p.parentElement.querySelector('button');if(b)b.textContent=expanded?'Prikaži cijelu obavijest':'Sažmi obavijest'}
-
+function togglePreview(id){
+  const p=$(id);
+  if(!p)return;
+  const expanded=p.dataset.expanded==='1';
+  p.dataset.expanded=expanded?'0':'1';
+  p.style.display=expanded?'-webkit-box':'block';
+  p.style.webkitLineClamp=expanded?'3':'unset';
+  p.style.lineClamp=expanded?'3':'unset';
+  const b=p.parentElement.querySelector(`button[data-toggle="${id}"]`);
+  if(b) b.textContent = expanded ? b.dataset.showText : b.dataset.hideText;
+}
 function newNotice(){modal('Nova obavijest',`
 <form onsubmit="saveNotice(event)">
   <div class="field"><label>Naslov</label><input name="title" required></div>
@@ -402,5 +471,14 @@ async function printVoteReport(id,win){
 async function exportVotePDF(id){ const win=openVoteReportWindow(); if(!win) return; await printVoteReport(id,win); }
 async function makeReport(){ const id=$('reportVote').value; if(!id) return; const win=openVoteReportWindow(); if(!win) return; await printVoteReport(id,win); }
 $('loginForm').addEventListener('submit',e=>{if(!configured){e.preventDefault();msg('Najprije konfigurirajte Supabase u config.js i objavite aplikaciju na HTTPS hostingu.')}});boot();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('Service Worker registracija nije uspjela: ', err);
+      });
+    });
+  }
 </script>
 </body></html>
