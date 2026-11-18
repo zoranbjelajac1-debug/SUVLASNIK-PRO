@@ -430,11 +430,9 @@ async function deleteMember(id, name){
   if(!confirm(`Jeste li sigurni da želite trajno obrisati korisnika:\n\n${name}?\n\nTime će se obrisati i svi njegovi glasovi i prijave.`)) return;
   
   try {
-    // 1. Prvo brišemo povezane podatke (glasove i prijave) kako baza ne bi blokirala brisanje
     await sb.from('ballots').delete().eq('member_id', id);
     await sb.from('issues').delete().eq('created_by', id);
     
-    // 2. Pozivamo našu novu Edge funkciju 'delete-user' koja briše korisnika iz auth.users
     const { data, error } = await sb.functions.invoke('delete-user', {
       body: { userId: id }
     });
@@ -535,53 +533,92 @@ async function updateMember(e,id){
 }
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
 
-function openVoteReportWindow(){const win=window.open('', '_blank');if(!win){alert('Preglednik je blokirao novi prozor. Dopustite skočne prozore za ovu stranicu.');return null;}return win;}
+async function printVoteReport(id){
+  try {
+    const {data:v,error:ev}=await sb.from('votes').select('*').eq('id',id).single();
+    if(ev) throw ev;
+    const {data:totals,error:e1}=await sb.rpc('vote_results',{p_vote_id:id});
+    if(e1) throw e1;
+    const {data:people,error:e2}=await sb.rpc('vote_individual_results',{p_vote_id:id});
+    if(e2) throw e2;
 
-async function printVoteReport(id,win){
-  if(!id || !win) return;
-  const {data:v,error:ev}=await sb.from('votes').select('*').eq('id',id).single();
-  if(ev){ win.close(); alert(ev.message); return; }
-  const {data:totals,error:e1}=await sb.rpc('vote_results',{p_vote_id:id});
-  if(e1){ win.close(); alert(e1.message); return; }
-  const {data:people,error:e2}=await sb.rpc('vote_individual_results',{p_vote_id:id});
-  if(e2){ win.close(); alert(e2.message); return; }
-  const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
-  const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td>${Number(r.votes_count||0)}</td><td>${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
-  const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td>${Number(p.share_percent||0).toFixed(4)}%</td><td>${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
-  const html=`<!DOCTYPE html><html lang="hr"><head><meta charset="UTF-8"><title>Izvještaj glasovanja - ${esc(v.title||'')}</title><style>
-      body{font-family:Arial,sans-serif;color:#222;margin:25px;font-size:12px;}
-      h1{font-size:20px;margin-bottom:5px} h2{font-size:16px;margin-top:25px}
-      .info{margin:8px 0;line-height:1.6}
-      .description{border:1px solid #ccc;padding:10px;white-space:pre-wrap;line-height:1.5;}
-      table{width:100%;border-collapse:collapse;margin-top:10px;}
-      th,td{border:1px solid #999;padding:7px;text-align:left;vertical-align:top;}
-      th{background:#eee} thead{display:table-header-group} tr{page-break-inside:avoid}
-      .note{margin-top:10px;font-size:9px}
-      .report-brand{display:flex;align-items:center;gap:12px;border-bottom:2px solid #17365d;padding-bottom:8px;margin-bottom:10px}
-      .report-brand img{width:68px;height:54px;object-fit:contain}
-      .report-brand h1{margin:0 0 4px;color:#17365d;font-size:18px}
-      h2{font-size:13px;margin-top:12px;margin-bottom:5px}
-      th,td{padding:4px 6px;font-size:10px}
-      .description{padding:6px;line-height:1.25}
-      @page{size:A4 landscape;margin:8mm}
-      @media print{ body{margin:0} .no-print{display:none} }
-    </style></head><body>
-    <div class="report-brand"><img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO"><div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div></div>
-    <div class="info"><b>Naslov glasovanja:</b> ${esc(v.title||'')}<br><b>Vrsta:</b> ${esc(v.vote_type||'')}<br><b>Status:</b> ${esc(v.status||'')}<br><b>Razdoblje od:</b> ${fmt(v.opens_at)}<br><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
-    <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
-    <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
-    <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
-    <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. Pravnu valjanost odluke treba provjeriti zasebno.</div>
-    <button class="no-print" onclick="window.print()">Ispiši / Spremi kao PDF</button>
-  </body></html>`;
-  win.document.open(); win.document.write(html); win.document.close();
-  const logo=win.document.getElementById('reportLogo');
-  if(logo && !logo.complete){ await new Promise(resolve=>{ logo.onload=resolve; logo.onerror=resolve; }); }
-  win.focus(); setTimeout(()=>win.print(),700);
+    const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
+    const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td>${Number(r.votes_count||0)}</td><td>${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
+    const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td>${Number(p.share_percent||0).toFixed(4)}%</td><td>${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
+
+    const html=`<!DOCTYPE html><html lang="hr"><head><meta charset="UTF-8"><title>Izvještaj glasovanja - ${esc(v.title||'')}</title><style>
+        body{font-family:Arial,sans-serif;color:#222;margin:25px;font-size:12px;}
+        h1{font-size:20px;margin-bottom:5px} h2{font-size:16px;margin-top:25px}
+        .info{margin:8px 0;line-height:1.6}
+        .description{border:1px solid #ccc;padding:10px;white-space:pre-wrap;line-height:1.5;}
+        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        th,td{border:1px solid #999;padding:7px;text-align:left;vertical-align:top;}
+        th{background:#eee} thead{display:table-header-group} tr{page-break-inside:avoid}
+        .note{margin-top:10px;font-size:9px}
+        .report-brand{display:flex;align-items:center;gap:12px;border-bottom:2px solid #17365d;padding-bottom:8px;margin-bottom:10px}
+        .report-brand img{width:68px;height:54px;object-fit:contain}
+        .report-brand h1{margin:0 0 4px;color:#17365d;font-size:18px}
+        h2{font-size:13px;margin-top:12px;margin-bottom:5px}
+        th,td{padding:4px 6px;font-size:10px}
+        .description{padding:6px;line-height:1.25}
+        @page{size:A4 landscape;margin:8mm}
+        @media print{ body{margin:0} .no-print{display:none} }
+      </style></head><body>
+      <div class="report-brand"><img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO"><div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div></div>
+      <div class="info"><b>Naslov glasovanja:</b> ${esc(v.title||'')}<br><b>Vrsta:</b> ${esc(v.vote_type||'')}<br><b>Status:</b> ${esc(v.status||'')}<br><b>Razdoblje od:</b> ${fmt(v.opens_at)}<br><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
+      <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
+      <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
+      <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
+      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. Pravnu valjanost odluke treba provjeriti zasebno.</div>
+    </body></html>`;
+
+    // Skriveni iframe za ispis (pouzdanije na mobitelu od window.open)
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    iframe.style.left = '-9999px';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    const logo = doc.getElementById('reportLogo');
+    if (logo && !logo.complete) {
+        await new Promise(resolve => {
+            logo.onload = resolve;
+            logo.onerror = resolve;
+        });
+    }
+
+    iframe.contentWindow.focus();
+    setTimeout(() => {
+        iframe.contentWindow.print();
+        setTimeout(() => {
+            if (document.body.contains(iframe)) {
+                document.body.removeChild(iframe);
+            }
+        }, 2000);
+    }, 500);
+
+  } catch (error) {
+    console.error(error);
+    alert('Greška pri izradi PDF-a: ' + error.message);
+  }
 }
 
-async function exportVotePDF(id){ const win=openVoteReportWindow(); if(!win) return; await printVoteReport(id,win); }
-async function makeReport(){ const id=$('reportVote').value; if(!id) return; const win=openVoteReportWindow(); if(!win) return; await printVoteReport(id,win); }
+async function exportVotePDF(id){
+  await printVoteReport(id);
+}
+
+async function makeReport(){
+  const id=$('reportVote').value;
+  if(!id) return;
+  await printVoteReport(id);
+}
 $('loginForm').addEventListener('submit',e=>{if(!configured){e.preventDefault();msg('Najprije konfigurirajte Supabase u config.js i objavite aplikaciju na HTTPS hostingu.')}});boot();
 </script>
 <script>
