@@ -118,6 +118,13 @@
 <script>
 const $=id=>document.getElementById(id);
 const NAV=[['home','⌂','Početna'],['votes','☑','Glasovanja'],['issues','🔧','Problemi'],['docs','▤','Dokumenti'],['archive','▣','Arhiva'],['news','◉','Obavijesti'],['admin','⚙','Administracija']];
+const SUPER_ADMIN_EMAIL = 'zoran.bjelajac1@gmail.com'; // <--- OVDJE UPŠITE VAŠ E-MAIL
+
+function isSuperAdmin(){ return user?.email === SUPER_ADMIN_EMAIL; }
+function isPredstavnik(){ return profile?.role === 'admin'; }
+function canEditData(){ return isSuperAdmin() || isPredstavnik(); } // Može mijenjati podatke (obavijesti, glasovanja...)
+function canManageUsers(){ return isSuperAdmin(); } // Može pozivati i uređivati korisnike
+function isAdmin(){ return canEditData(); } // Ovo omogućava Predstavniku da dobije gumbe za uređivanje/brisanje po cijeloj aplikaciji
 let sb=null,user=null,profile=null,buildingId=null,page='home',issueFilter='sve',cache={};
 const configured=window.SUPABASE_CONFIG&&SUPABASE_CONFIG.url&&SUPABASE_CONFIG.anonKey&&!SUPABASE_CONFIG.url.includes('OVDJE');
 function msg(t,ok=false){$('authMsg').textContent=t;$('authMsg').style.color=ok?'#12805c':'#bd3945'}
@@ -130,11 +137,14 @@ function head(t,s,btn=''){return `<div class="pagehead"><div><h2>${t}</h2><div c
 function modal(t,body){$('modalRoot').innerHTML=`<div class="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalhead"><h3>${t}</h3><button class="close" onclick="closeModal()">✕</button></div>${body}</div></div>`}
 function closeModal(){$('modalRoot').innerHTML=''}
 function isAdmin(){return profile?.role==='admin'}
-function go(p){if(p==='admin'&&!isAdmin()){alert('Samo administrator ima pristup ovom modulu.');return}page=p;render()}
+function go(p){
+  page=p;
+  render();
+}
 async function logout(){if(!sb)return;const {error}=await sb.auth.signOut();if(error){alert('Odjava nije uspjela: '+error.message);return}page='home';}
 
 function nav(){
-  const visible=NAV.filter(x=>isAdmin()||x[0]!=='admin');
+  const visible=NAV;
   const short=t=>t==='Administracija'?'Admin':t;   
   $('side').innerHTML=visible.map(([id,ic,t])=>`<button class="nav ${page===id?'active':''}" onclick="go('${id}')"><span>${ic}</span>${t}</button>`).join('');
   $('mobile').innerHTML=visible.filter(x=>x[0]!=='archive').map(([id,ic,t])=>`<button class="${page===id?'active':''}" onclick="go('${id}')"><b>${ic}</b><span class="mlabel">${short(t)}</span></button>`).join('');
@@ -188,17 +198,46 @@ async function saveNewPassword(e) {
 }
 
 async function enter(u){
-  user=u;
-  if(u.user_metadata?.onboarding_completed === false){ showPasswordSetup(); return; }
-  const {data,error}=await sb.from('members').select('*,buildings(*)').eq('id',u.id).eq('active',true).single();
-  if(error||!data){
+  user = u;
+
+  // Novi pozvani korisnik mora prvo postaviti lozinku
+  if(u.user_metadata?.onboarding_completed === false){
+    showPasswordSetup();
+    return;
+  }
+
+  const isSuper = (u.email === SUPER_ADMIN_EMAIL);
+
+  // 1. Prvo pokušavamo pronaći korisnika u tablici suvlasnika (members)
+  const {data, error} = await sb.from('members').select('*,buildings(*)').eq('id',u.id).eq('active',true).single();
+
+  if(data){
+    // KORISNIK JE U BAZI SUVLASNIKA (Bilo obični suvlasnik ili Predstavnik)
+    profile = data;
+    buildingId = data.building_id;
+  } 
+  else if (isSuper) {
+    // KORISNIK NIJE U BAZI SUVLASNIKA, ALI JE GLAVNI ADMINISTRATOR
+    const {data:b, error:be} = await sb.from('buildings').select('id').limit(1).single();
+    if(be || !b){ 
+      msg('Greška: Zgrada nije pronađena u bazi.'); 
+      return; 
+    }
+    buildingId = b.id;
+    profile = { id: u.id, display_name: 'Administrator', role: 'superadmin', unit_label: 'Sustav', active: true };
+  } 
+  else {
+    // NIJE NI U BAZI, NIJE NI ADMINISTRATOR
     await sb.auth.signOut();
     msg('Račun nije povezan s aktivnim suvlasnikom. Obratite se administratoru.');
     return;
   }
-  profile=data; buildingId=data.building_id;
-  $('auth').classList.add('hide'); $('app').classList.remove('hide');
-  $('userPill').textContent=esc(data.display_name||u.email);
+
+  $('auth').classList.add('hide');
+  $('app').classList.remove('hide');
+
+  $('userPill').textContent = esc(profile.display_name || u.email);
+
   await render();
 }
 
@@ -215,7 +254,7 @@ async function render(){
     if(page==='home'){
       let [issues,votes,news,docs]=await Promise.all([rows('issues','created_at','*, members(display_name)'),rows('votes'),rows('announcements'),rows('documents')]);
       cache={issues,votes,news,docs}; let open=issues.filter(x=>x.status!=='riješeno').length,active=votes.filter(x=>x.status==='open').length;
-      const tiles=[['votes','☑','Glasovanja','Pregled i glasovanje'],['issues','🔧','Problemi','Prijave i statusi'],['docs','▤','Dokumenti','Dokumentacija zgrade'],['archive','▣','Arhiva','Odluke i zapisnici'],['news','◉','Obavijesti','Važne informacije'],...(isAdmin()?[['admin','⚙','Administracija','Upravljanje zgradom']]:[])];
+      const tiles=[['votes','☑','Glasovanja','Pregled i glasovanje'],['issues','🔧','Problemi','Prijave i statusi'],['docs','▤','Dokumenti','Dokumentacija zgrade'],['archive','▣','Arhiva','Odluke i zapisnici'],['news','◉','Obavijesti','Važne informacije'],['admin','⚙','Administracija','Upravljanje zgradom']];
       v.innerHTML=head('Pregled zgrade','Zajedničke informacije u stvarnom vremenu')+`<div class="grid"><div class="card kpi"><div><b>${esc(profile.unit_label)}</b><small>Vaš stan</small></div><span class="symbol">🏢</span></div><div class="card kpi"><div><b>${active}</b><small>Aktivna glasovanja</small></div><span class="symbol">☑</span></div><div class="card kpi"><div><b>${open}</b><small>Otvorene prijave</small></div><span class="symbol">🔧</span></div></div><h3>Moduli zgrade</h3><div class="home-tiles">${tiles.map(([id,ic,title,desc])=>`<button class="home-tile" onclick="go('${id}')"><span class="symbol">${ic}</span><span>${title}<small>${desc}</small></span></button>`).join('')}</div><h3>Najnovije obavijesti</h3>${news.slice(0,3).map(x=>noticeCard(x)).join('')||empty('Nema obavijesti')}`
     }
     if(page==='news'){let a=await rows('announcements');v.innerHTML=head('Obavijesti','Objave predstavnika suvlasnika',isAdmin()?'<button class="btn" onclick="newNotice()">＋ Nova obavijest</button>':'')+a.map(noticeCard).join('')||empty('Nema obavijesti')}
@@ -223,9 +262,44 @@ async function render(){
     if(page==='votes'){let a=await rows('votes');v.innerHTML=head('Glasovanja','Glasovi i rezultati po suvlasničkim udjelima',isAdmin()?'<button class="btn" onclick="newVote()">＋ Novo glasovanje</button>':'')+a.map(voteCard).join('')||empty('Nema glasovanja')}
     if(page==='docs'||page==='archive'){let a=await rows('documents');if(page==='archive')a=a.filter(x=>['odluka','zapisnik'].includes(x.category));v.innerHTML=head(page==='docs'?'Dokumentacija':'Arhiva odluka i zapisnika',page==='docs'?'Privatna pohrana dokumenata zgrade':'Automatski popis arhiviranih odluka i zapisnika',isAdmin()?'<button class="btn" onclick="newDoc()">＋ Učitaj dokument</button>':'')+a.map(docCard).join('')||empty('Nema dokumenata')}
     if(page==='admin'&&!isAdmin()){page='home';return render()}
-    if(page==='admin'){
-      let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');if(error)throw error;
-      v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+(isAdmin()?`<div class="card"><div class="line"><h3>Registar suvlasnika</h3><button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button></div><div class="tablewrap"><table><thead><tr><th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th><th></th></tr></thead><tbody>${m.map(x=>`<tr><td>${esc(x.unit_label)}</td><td>${esc(x.display_name)}</td><td>${x.share_percent??'—'}</td><td>${x.role==='admin'?'Predstavnik suvlasnika':x.role==='owner'?'Suvlasnik':esc(x.role)}</td><td>${x.active?'Aktivan':'Neaktivan'}</td><td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}')">Uredi</button></td></tr>`).join('')}</tbody></table></div><p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p></div><div class="card"><h3>Izvještaj o glasovanju</h3><p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p><button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button></div>`:note('Samo administrator ima pristup registru i postavkama.'))
+        if(page==='admin'){
+      let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');
+      if(error)throw error;
+      
+      // Gumb za poziv vidi samo Glavni Admin
+      let inviteBtn = canManageUsers() ? '<button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button>' : '';
+      // Stupac s gumbom Uredi vide samo Glavni Admin
+      let editTh = canManageUsers() ? '<th></th>' : '';
+
+      v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+
+      `<div class="card">
+        <div class="line"><h3>Registar suvlasnika</h3>${inviteBtn}</div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stan</th><th>Ime</th><th>Udio %</th><th>Uloga</th><th>Status</th>${editTh}
+              </tr>
+            </thead>
+            <tbody>${m.map(x=>`
+              <tr>
+                <td>${esc(x.unit_label)}</td>
+                <td>${esc(x.display_name)}</td>
+                <td>${x.share_percent??'—'}</td>
+                <td>${x.role==='admin'?'Predstavnik suvlasnika':x.role==='owner'?'Suvlasnik':esc(x.role)}</td>
+                <td>${x.active?'Aktivan':'Neaktivan'}</td>
+                ${canManageUsers()?`<td><button class="btn secondary small" onclick="editMember('${x.id}','${esc(x.unit_label)}','${esc(x.display_name)}','${x.share_percent??''}','${x.role}')">Uredi</button></td>`:''}
+              </tr>
+            `).join('')}</tbody>
+          </table>
+        </div>
+        <p class="meta">Zbroj evidentiranih udjela: ${m.reduce((s,x)=>s+Number(x.share_percent||0),0).toFixed(4)}% (cilj 100%).</p>
+      </div>
+      <div class="card">
+        <h3>Izvještaj o glasovanju</h3>
+        <p class="sub">Odaberite glasanje za izradu PDF izvještaja s rezultatima i udjelima.</p>
+        <button class="btn secondary" onclick="reportPicker()">Izradi PDF izvještaj</button>
+      </div>`;
     }
   }catch(e){v.innerHTML=note('Greška pri učitavanju: '+esc(e.message))}
 }
@@ -419,8 +493,35 @@ async function exportVoteExcel(id){
 async function closeVote(id){if(!confirm('Zatvoriti glasanje?'))return;let {error}=await sb.from('votes').update({status:'closed'}).eq('id',id);if(error)alert(error.message);else render()}
 function inviteMember(){modal('Pozovi suvlasnika',`<form onsubmit="sendInvite(event)"><div class="field"><label>E-mail adresa</label><input name="email" type="email" required></div><div class="field"><label>Stan</label><input name="unit_label" required placeholder="npr. Stan 3"></div><div class="field"><label>Ime i prezime</label><input name="display_name" required></div><div class="field"><label>Suvlasnički udio (%)</label><input name="share_percent" type="number" min="0" max="100" step="0.0001" required></div><div class="field"><label>Uloga</label><select name="role"><option value="owner">Suvlasnik</option><option value="admin">Predstavnik suvlasnika</option></select></div><button class="btn">Pošalji poziv</button></form><p class="meta">Poziv se šalje putem zaštićene Edge Function koja koristi service role na poslužitelju. Tajni ključ nikada ne smije biti u pregledniku.</p>`)}
 async function sendInvite(e){e.preventDefault();let f=new FormData(e.target);let {data:{session}}=await sb.auth.getSession();let res=await fetch(`${SUPABASE_CONFIG.url}/functions/v1/invite-member`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`,'apikey':SUPABASE_CONFIG.anonKey},body:JSON.stringify({email:f.get('email'),unit_label:f.get('unit_label'),display_name:f.get('display_name'),share_percent:Number(f.get('share_percent')),role:f.get('role'),building_id:buildingId})});let j=await res.json();if(!res.ok){alert(j.error||'Poziv nije uspio');return}closeModal();alert('Poziv je poslan.');render()}
-function editMember(id,unit,name,share){modal('Uredi suvlasnika',`<form onsubmit="updateMember(event,'${id}')"><div class="field"><label>Stan</label><input name="unit" value="${unit}" required></div><div class="field"><label>Ime</label><input name="name" value="${name}" required></div><div class="field"><label>Udio (%)</label><input name="share" type="number" min="0" max="100" step="0.0001" value="${share}" required></div><button class="btn">Spremi promjene</button></form>`)}
-async function updateMember(e,id){e.preventDefault();let f=new FormData(e.target);let {error}=await sb.from('members').update({unit_label:f.get('unit'),display_name:f.get('name'),share_percent:Number(f.get('share'))}).eq('id',id);if(error)alert(error.message);else{closeModal();render()}}
+function editMember(id, unit, name, share, role){
+  modal('Uredi suvlasnika',`
+  <form onsubmit="updateMember(event,'${id}')">
+    <div class="field"><label>Stan</label><input name="unit" value="${unit}" required></div>
+    <div class="field"><label>Ime</label><input name="name" value="${name}" required></div>
+    <div class="field"><label>Udio (%)</label><input name="share" type="number" min="0" max="100" step="0.0001" value="${share}" required></div>
+    <div class="field">
+      <label>Uloga</label>
+      <select name="role">
+        <option value="owner" ${role === 'owner' ? 'selected' : ''}>Suvlasnik</option>
+        <option value="admin" ${role === 'admin' ? 'selected' : ''}>Predstavnik suvlasnika</option>
+      </select>
+    </div>
+    <button class="btn">Spremi promjene</button>
+  </form>`);
+}
+async function updateMember(e,id){
+  e.preventDefault();
+  let f=new FormData(e.target);
+  let {error}=await sb.from('members').update({
+    unit_label: f.get('unit'),
+    display_name: f.get('name'),
+    share_percent: Number(f.get('share')),
+    role: f.get('role') // <--- Ovo je novo
+  }).eq('id',id);
+  
+  if(error) alert(error.message);
+  else { closeModal(); render(); }
+}
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
 
 function openVoteReportWindow(){const win=window.open('', '_blank');if(!win){alert('Preglednik je blokirao novi prozor. Dopustite skočne prozore za ovu stranicu.');return null;}return win;}
