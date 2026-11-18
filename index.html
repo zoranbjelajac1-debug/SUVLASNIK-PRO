@@ -447,7 +447,7 @@ async function deleteMember(id, name){
   }
 }
 
-function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka (zahtijeva pravnu provjeru)</option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
+function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka </option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
 async function saveVote(e){e.preventDefault();let f=new FormData(e.target);let {data:v,error}=await sb.from('votes').insert({building_id:buildingId,title:f.get('title'),description:f.get('description'),vote_type:f.get('vote_type'),closes_at:f.get('closes_at')||null,status:'open',created_by:user.id}).select().single();if(error){alert(error.message);return}let opts=f.get('options').split(',').map(x=>x.trim()).filter(Boolean).map(label=>({vote_id:v.id,label}));let r=await sb.from('vote_options').insert(opts);if(r.error)alert(r.error.message);closeModal();render()}
 async function castVote(id){let {data:o,error}=await sb.from('vote_options').select('*').eq('vote_id',id);if(error){alert(error.message);return}modal('Vaš glas',`<p class="sub">Glas se može predati samo jednom. Nakon predaje nije ga moguće samostalno mijenjati.</p><div class="actions">${o.map(x=>`<button class="btn secondary" onclick="submitBallot('${id}','${x.id}')">${esc(x.label)}</button>`).join('')}</div>`)}
 async function submitBallot(vote_id,option_id){let {error}=await sb.rpc('cast_vote',{p_vote_id:vote_id,p_option_id:option_id});if(error)alert(error.message);else{closeModal();alert('Glas je zabilježen.');render()}}
@@ -569,7 +569,7 @@ async function printVoteReport(id){
       <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
       <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
       <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
-      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. Pravnu valjanost odluke treba provjeriti zasebno.</div>
+      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. </div>
     </body></html>`;
 
     // Skriveni iframe za ispis (pouzdanije na mobitelu od window.open)
