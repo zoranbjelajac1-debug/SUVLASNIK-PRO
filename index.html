@@ -261,14 +261,11 @@ async function render(){
     if(page==='issues'){let a=await rows('issues','created_at','*, members(display_name)');v.innerHTML=head('Prijave problema','Kvarovi i poteškoće u zajedničkim dijelovima',`<button class="btn" onclick="newIssue()">＋ Nova prijava</button>`)+`<div class="tabs">${['sve','zaprimljeno','u obradi','riješeno'].map(x=>`<button class="tab ${issueFilter===x?'active':''}" onclick="issueFilter='${x}';render()">${x}</button>`).join('')}</div>`+a.filter(x=>issueFilter==='sve'||x.status===issueFilter).map(issueCard).join('')||empty('Nema prijava')}
     if(page==='votes'){let a=await rows('votes');v.innerHTML=head('Glasovanja','Glasovi i rezultati po suvlasničkim udjelima',isAdmin()?'<button class="btn" onclick="newVote()">＋ Novo glasovanje</button>':'')+a.map(voteCard).join('')||empty('Nema glasovanja')}
     if(page==='docs'||page==='archive'){let a=await rows('documents');if(page==='archive')a=a.filter(x=>['odluka','zapisnik'].includes(x.category));v.innerHTML=head(page==='docs'?'Dokumentacija':'Arhiva odluka i zapisnika',page==='docs'?'Privatna pohrana dokumenata zgrade':'Automatski popis arhiviranih odluka i zapisnika',isAdmin()?'<button class="btn" onclick="newDoc()">＋ Učitaj dokument</button>':'')+a.map(docCard).join('')||empty('Nema dokumenata')}
-    if(page==='admin'&&!isAdmin()){page='home';return render()}
-        if(page==='admin'){
+            if(page==='admin'){
       let {data:m,error}=await sb.from('members').select('*').eq('building_id',buildingId).order('unit_label');
       if(error)throw error;
       
-      // Gumb za poziv vidi samo Glavni Admin
       let inviteBtn = canManageUsers() ? '<button class="btn small" onclick="inviteMember()">＋ Pozovi korisnika</button>' : '';
-      // Stupac s gumbom Uredi vide samo Glavni Admin
       let editTh = canManageUsers() ? '<th></th>' : '';
 
       v.innerHTML=head('Administracija','Korisnici, suvlasnički udjeli i postavke')+
@@ -509,6 +506,7 @@ function editMember(id, unit, name, share, role){
     <button class="btn">Spremi promjene</button>
   </form>`);
 }
+
 async function updateMember(e,id){
   e.preventDefault();
   let f=new FormData(e.target);
@@ -516,7 +514,7 @@ async function updateMember(e,id){
     unit_label: f.get('unit'),
     display_name: f.get('name'),
     share_percent: Number(f.get('share')),
-    role: f.get('role') // <--- Ovo je novo
+    role: f.get('role')
   }).eq('id',id);
   
   if(error) alert(error.message);
