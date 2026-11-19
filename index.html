@@ -113,7 +113,6 @@
 </div><div id="modalRoot"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="config.js"></script>
 <script>
@@ -448,7 +447,7 @@ async function deleteMember(id, name){
   }
 }
 
-function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka (zahtijeva pravnu provjeru)</option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
+function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka </option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
 async function saveVote(e){e.preventDefault();let f=new FormData(e.target);let {data:v,error}=await sb.from('votes').insert({building_id:buildingId,title:f.get('title'),description:f.get('description'),vote_type:f.get('vote_type'),closes_at:f.get('closes_at')||null,status:'open',created_by:user.id}).select().single();if(error){alert(error.message);return}let opts=f.get('options').split(',').map(x=>x.trim()).filter(Boolean).map(label=>({vote_id:v.id,label}));let r=await sb.from('vote_options').insert(opts);if(r.error)alert(r.error.message);closeModal();render()}
 async function castVote(id){let {data:o,error}=await sb.from('vote_options').select('*').eq('vote_id',id);if(error){alert(error.message);return}modal('Vaš glas',`<p class="sub">Glas se može predati samo jednom. Nakon predaje nije ga moguće samostalno mijenjati.</p><div class="actions">${o.map(x=>`<button class="btn secondary" onclick="submitBallot('${id}','${x.id}')">${esc(x.label)}</button>`).join('')}</div>`)}
 async function submitBallot(vote_id,option_id){let {error}=await sb.rpc('cast_vote',{p_vote_id:vote_id,p_option_id:option_id});if(error)alert(error.message);else{closeModal();alert('Glas je zabilježen.');render()}}
@@ -481,25 +480,9 @@ async function exportVoteExcel(id){
     ws.mergeCells('B1:E2');ws.getCell('B1').value='SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA';ws.getCell('B1').font={name:'Arial',size:16,bold:true,color:{argb:'FF'+navy}};ws.getCell('B1').alignment={vertical:'middle',horizontal:'center',wrapText:true};
     ws.getRow(1).height=34;ws.getRow(2).height=34;ws.getRow(3).height=10;
     function band(row,text){ws.mergeCells(`A${row}:E${row}`);const c=ws.getCell(`A${row}`);c.value=text;c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+navy}};c.alignment={vertical:'middle'};c.border=border;ws.getRow(row).height=21}
-    function meta(row,label,value,isLong=false){
-      ws.getCell(`A${row}`).value=label;
-      ws.getCell(`A${row}`).font={bold:true,color:{argb:'FF'+navy}};
-      ws.getCell(`A${row}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+blue}};
-      ws.mergeCells(`B${row}:E${row}`);
-      ws.getCell(`B${row}`).value=value||'—';
-      ws.getCell(`B${row}`).alignment={wrapText:true,vertical:'middle'};
-      for(let c=1;c<=5;c++) ws.getRow(row).getCell(c).border=border;
-      
-      if (isLong) {
-        const charsPerLine = 100;
-        const lines = Math.ceil((value || '').length / charsPerLine);
-        ws.getRow(row).height = Math.max(21, lines * 15 + 10);
-      } else {
-        ws.getRow(row).height = 21;
-      }
-    }
+    function meta(row,label,value){ws.getCell(`A${row}`).value=label;ws.getCell(`A${row}`).font={bold:true,color:{argb:'FF'+navy}};ws.getCell(`A${row}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+blue}};ws.mergeCells(`B${row}:E${row}`);ws.getCell(`B${row}`).value=value||'—';ws.getCell(`B${row}`).alignment={wrapText:true,vertical:'middle'};for(let c=1;c<=5;c++)ws.getRow(row).getCell(c).border=border;ws.getRow(row).height=row===6?30:21}
     const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
-    meta(4,'Zgrada','Put Skalica 12, Split');meta(5,'Glasovanje',v.title||'');meta(6,'Opis',v.description||'Bez opisa', true);meta(7,'Vrsta',v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa');meta(8,'Početak',fmt(v.opens_at));meta(9,'Završetak',fmt(v.closes_at));meta(10,'Status',v.status==='open'?'Otvoreno':'Zatvoreno');
+    meta(4,'Zgrada','Put Skalica 12, Split');meta(5,'Glasovanje',v.title||'');meta(6,'Opis',v.description||'Bez opisa');meta(7,'Vrsta',v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa');meta(8,'Početak',fmt(v.opens_at));meta(9,'Završetak',fmt(v.closes_at));meta(10,'Status',v.status==='open'?'Otvoreno':'Zatvoreno');
     band(12,'UKUPNI REZULTATI');
     ['Opcija','Broj glasova','Udio (%)','',''].forEach((x,i)=>{const c=ws.getRow(13).getCell(i+1);c.value=x;c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+navy}};c.alignment={horizontal:'center'};c.border=border});
     totals.forEach((x,i)=>{const row=14+i;[x.option_label||'',Number(x.votes_count||0),Number(x.share_percent||0),'',''].forEach((val,j)=>{const c=ws.getRow(row).getCell(j+1);c.value=val;c.border=border;c.alignment={vertical:'middle',horizontal:j===0?'left':'center'};if(i%2===1)c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+light}}});ws.getCell(`C${row}`).numFmt='0.0000"%"'});
@@ -551,7 +534,6 @@ async function updateMember(e,id){
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
 
 async function printVoteReport(id){
-  if(!window.jspdf) { alert('jsPDF biblioteka nije učitana.'); return; }
   try {
     const {data:v,error:ev}=await sb.from('votes').select('*').eq('id',id).single();
     if(ev) throw ev;
@@ -560,182 +542,67 @@ async function printVoteReport(id){
     const {data:people,error:e2}=await sb.rpc('vote_individual_results',{p_vote_id:id});
     if(e2) throw e2;
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4');
-
-    // Sigurno učitavanje fonta s FileReaderom (rješava grešku Unicode)
-    const loadFont = (url) => new Promise(async (resolve, reject) => {
-      try {
-        const res = await fetch(url);
-        const blob = await res.blob();
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(',')[1]); // Base64 bez prefiksa
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      } catch (e) { reject(e); }
-    });
-
-    const regularFont = await loadFont('https://cdn.jsdelivr.net/npm/@canvas-fonts/roboto@1.0.4/Roboto-Regular.ttf');
-    const boldFont = await loadFont('https://cdn.jsdelivr.net/npm/@canvas-fonts/roboto@1.0.4/Roboto-Bold.ttf');
-
-    doc.addFileToVFS('Roboto-Regular.ttf', regularFont);
-    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-    doc.addFileToVFS('Roboto-Bold.ttf', boldFont);
-    doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
-
     const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
-    
-    const navy = [23, 54, 93]; 
-    const light = [242, 246, 250]; 
+    const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td>${Number(r.votes_count||0)}</td><td>${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
+    const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td>${Number(p.share_percent||0).toFixed(4)}%</td><td>${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
 
-    // 1. Logotip i Zaglavlje
-    try {
-      const response = await fetch('https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png');
-      if(response.ok) {
-        const blob = await response.blob();
-        const logoData = await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)});
-        doc.addImage(logoData, 'PNG', 10, 10, 25, 18);
-      }
-    } catch(e) { console.log('Logo nije učitan:', e); }
+    const html=`<!DOCTYPE html><html lang="hr"><head><meta charset="UTF-8"><title>Izvještaj glasovanja - ${esc(v.title||'')}</title><style>
+        body{font-family:Arial,sans-serif;color:#222;margin:25px;font-size:12px;}
+        h1{font-size:20px;margin-bottom:5px} h2{font-size:16px;margin-top:25px}
+        .info{margin:8px 0;line-height:1.6}
+        .description{border:1px solid #ccc;padding:10px;white-space:pre-wrap;line-height:1.5;}
+        table{width:100%;border-collapse:collapse;margin-top:10px;}
+        th,td{border:1px solid #999;padding:7px;text-align:left;vertical-align:top;}
+        th{background:#eee} thead{display:table-header-group} tr{page-break-inside:avoid}
+        .note{margin-top:10px;font-size:9px}
+        .report-brand{display:flex;align-items:center;gap:12px;border-bottom:2px solid #17365d;padding-bottom:8px;margin-bottom:10px}
+        .report-brand img{width:68px;height:54px;object-fit:contain}
+        .report-brand h1{margin:0 0 4px;color:#17365d;font-size:18px}
+        h2{font-size:13px;margin-top:12px;margin-bottom:5px}
+        th,td{padding:4px 6px;font-size:10px}
+        .description{padding:6px;line-height:1.25}
+        @page{size:A4 landscape;margin:8mm}
+        @media print{ body{margin:0} .no-print{display:none} }
+      </style></head><body>
+      <div class="report-brand"><img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO"><div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div></div>
+      <div class="info"><b>Naslov glasovanja:</b> ${esc(v.title||'')}<br><b>Vrsta:</b> ${esc(v.vote_type||'')}<br><b>Status:</b> ${esc(v.status||'')}<br><b>Razdoblje od:</b> ${fmt(v.opens_at)}<br><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
+      <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
+      <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
+      <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
+      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. </div>
+    </body></html>`;
 
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(16);
-    doc.setTextColor(navy[0], navy[1], navy[2]);
-    doc.text('SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA', 40, 18);
-    
-    doc.setFont('Roboto', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text('Put Skalica 12, Split', 40, 24);
+    // Skriveni iframe za ispis (pouzdanije na mobitelu od window.open)
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    iframe.style.left = '-9999px';
+    document.body.appendChild(iframe);
 
-    doc.setDrawColor(navy[0], navy[1], navy[2]);
-    doc.setLineWidth(0.5);
-    doc.line(10, 30, 287, 30);
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
 
-    // 2. Informacije
-    let startY = 38;
-    doc.setFontSize(10);
-    
-    doc.setFont('Roboto', 'bold');
-    doc.text('Naslov glasovanja:', 10, startY);
-    doc.setFont('Roboto', 'normal');
-    doc.text(String(v.title || ''), 50, startY);
-
-    startY += 6;
-    doc.setFont('Roboto', 'bold');
-    doc.text('Vrsta:', 10, startY);
-    doc.setFont('Roboto', 'normal');
-    doc.text(String(v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa'), 50, startY);
-
-    startY += 6;
-    doc.setFont('Roboto', 'bold');
-    doc.text('Status:', 10, startY);
-    doc.setFont('Roboto', 'normal');
-    doc.text(String(v.status==='open'?'Otvoreno':'Zatvoreno'), 50, startY);
-
-    startY += 6;
-    doc.setFont('Roboto', 'bold');
-    doc.text('Razdoblje od:', 10, startY);
-    doc.setFont('Roboto', 'normal');
-    doc.text(String(fmt(v.opens_at)), 50, startY);
-
-    startY += 6;
-    doc.setFont('Roboto', 'bold');
-    doc.text('Razdoblje do:', 10, startY);
-    doc.setFont('Roboto', 'normal');
-    doc.text(String(fmt(v.closes_at)), 50, startY);
-
-    // 3. ISPRAVAK ZA OPIS
-    startY += 8;
-    doc.setFont('Roboto', 'bold');
-    doc.text('Opis:', 10, startY);
-    
-    doc.setFont('Roboto', 'normal');
-    const descriptionText = String(v.description || 'Bez opisa');
-    const paragraphs = descriptionText.split('\n');
-    const maxLineWidth = 230;
-
-    for (let i = 0; i < paragraphs.length; i++) {
-        const text = paragraphs[i].trim() === '' ? ' ' : paragraphs[i];
-        const lines = doc.splitTextToSize(text, maxLineWidth);
-        doc.text(lines, 50, startY);
-        startY += (lines.length * 5) + 2; 
-        
-        if (startY > 180) {
-            doc.addPage();
-            startY = 20;
-        }
+    const logo = doc.getElementById('reportLogo');
+    if (logo && !logo.complete) {
+        await new Promise(resolve => {
+            logo.onload = resolve;
+            logo.onerror = resolve;
+        });
     }
-    
-    startY += 4;
 
-    // 4. Tablica Ukupni rezultati
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(12);
-    doc.text('UKUPNI REZULTATI', 10, startY);
-    
-    const aggBody = totals.map(r=>[
-      String(r.option_label||''), 
-      String(Number(r.votes_count||0)), 
-      Number(r.share_percent||0).toFixed(4)+'%'
-    ]);
-
-    doc.autoTable({
-      startY: startY + 2,
-      head: [['Opcija', 'Broj glasova', 'Udio (%)']],
-      body: aggBody,
-      theme: 'grid',
-      styles: { font: 'Roboto', fontSize: 9, cellPadding: 3 },
-      headStyles: { fillColor: navy, textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: light },
-      columnStyles: {
-        0: { cellWidth: 150 },
-        1: { cellWidth: 50, halign: 'center' },
-        2: { cellWidth: 50, halign: 'center' }
-      }
-    });
-
-    startY = doc.lastAutoTable.finalY + 10;
-
-    // 5. Tablica Pojedinačni glasovi
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(12);
-    doc.text('POJEDINAČNI GLASOVI SUVLASNIKA', 10, startY);
-
-    const indBody = people.map(p=>[
-      String(p.unit_label||''), 
-      String(p.display_name||''), 
-      String(p.option_label||'Nije glasovao'), 
-      Number(p.share_percent||0).toFixed(4)+'%', 
-      String(p.voted_at?fmt(p.voted_at):'—')
-    ]);
-
-    doc.autoTable({
-      startY: startY + 2,
-      head: [['Stan', 'Suvlasnik', 'Glas', 'Udio (%)', 'Vrijeme glasovanja']],
-      body: indBody,
-      theme: 'grid',
-      styles: { font: 'Roboto', fontSize: 8.5, cellPadding: 2.5 },
-      headStyles: { fillColor: navy, textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: light },
-      columnStyles: {
-        0: { cellWidth: 40 },
-        1: { cellWidth: 90 },
-        2: { cellWidth: 50, halign: 'center' },
-        3: { cellWidth: 40, halign: 'center' },
-        4: { cellWidth: 50, halign: 'center' }
-      }
-    });
-
-    // 6. Napomena na dnu
-    const finalY = doc.lastAutoTable.finalY + 8;
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text('Izvještaj je evidencijski prikaz podataka iz aplikacije. Pravnu valjanost odluke treba provjeriti zasebno.', 10, finalY);
-
-    // 7. Spremi PDF
-    const safeName=(v.title||'glasanje').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-|-$/g,'');
-    doc.save(`rezultati-glasovanja-${safeName||id}.pdf`);
+    iframe.contentWindow.focus();
+    setTimeout(() => {
+        iframe.contentWindow.print();
+        setTimeout(() => {
+            if (document.body.contains(iframe)) {
+                document.body.removeChild(iframe);
+            }
+        }, 2000);
+    }, 500);
 
   } catch (error) {
     console.error(error);
