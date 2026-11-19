@@ -550,32 +550,6 @@ async function updateMember(e,id){
 }
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
 
-// Pomoćna funkcija za učitavanje fonta koji podržava hrvatska slova
-async function loadFonts(doc) {
-  const fontUrl = 'https://cdn.jsdelivr.net/npm/@fontsource/roboto@4.5.8/files/roboto-latin-ext-400-normal.woff';
-  const fontBoldUrl = 'https://cdn.jsdelivr.net/npm/@fontsource/roboto@4.5.8/files/roboto-latin-ext-700-normal.woff';
-
-  const toBase64 = async (url) => {
-    const res = await fetch(url);
-    const buf = await res.arrayBuffer();
-    let binary = '';
-    const bytes = new Uint8Array(buf);
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-  };
-
-  const fontBase64 = await toBase64(fontUrl);
-  const fontBoldBase64 = await toBase64(fontBoldUrl);
-
-  doc.addFileToVFS('Roboto-Regular.ttf', fontBase64);
-  doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-  
-  doc.addFileToVFS('Roboto-Bold.ttf', fontBoldBase64);
-  doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
-}
-
 async function printVoteReport(id){
   if(!window.jspdf) { alert('jsPDF biblioteka nije učitana.'); return; }
   try {
@@ -587,10 +561,27 @@ async function printVoteReport(id){
     if(e2) throw e2;
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); // Landscape, A4
+    const doc = new jsPDF('l', 'mm', 'a4');
 
-    // Učitavamo font prije generiranja
-    await loadFonts(doc);
+    // Sigurno učitavanje fonta s FileReaderom (rješava grešku Unicode)
+    const loadFont = (url) => new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]); // Base64 bez prefiksa
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      } catch (e) { reject(e); }
+    });
+
+    const regularFont = await loadFont('https://cdn.jsdelivr.net/npm/@canvas-fonts/roboto@1.0.4/Roboto-Regular.ttf');
+    const boldFont = await loadFont('https://cdn.jsdelivr.net/npm/@canvas-fonts/roboto@1.0.4/Roboto-Bold.ttf');
+
+    doc.addFileToVFS('Roboto-Regular.ttf', regularFont);
+    doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    doc.addFileToVFS('Roboto-Bold.ttf', boldFont);
+    doc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
 
     const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
     
@@ -662,16 +653,15 @@ async function printVoteReport(id){
     doc.setFont('Roboto', 'normal');
     const descriptionText = String(v.description || 'Bez opisa');
     const paragraphs = descriptionText.split('\n');
-    const maxLineWidth = 230; // Malo manje od 237 da bude sigurno
+    const maxLineWidth = 230;
 
     for (let i = 0; i < paragraphs.length; i++) {
-        // Lomi svaki pojedinačni red na temelju širine
-        const lines = doc.splitTextToSize(paragraphs[i] || ' ', maxLineWidth);
+        const text = paragraphs[i].trim() === '' ? ' ' : paragraphs[i];
+        const lines = doc.splitTextToSize(text, maxLineWidth);
         doc.text(lines, 50, startY);
-        startY += (lines.length * 5) + 2; // 5mm visine po redu + 2mm razmak između paragrafa
+        startY += (lines.length * 5) + 2; 
         
-        // Provjera da li smo na kraju stranice, ako jesmo - nova stranica
-        if (startY > 190) {
+        if (startY > 180) {
             doc.addPage();
             startY = 20;
         }
@@ -752,6 +742,7 @@ async function printVoteReport(id){
     alert('Greška pri izradi PDF-a: ' + error.message);
   }
 }
+
 async function exportVotePDF(id){
   await printVoteReport(id);
 }
