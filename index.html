@@ -447,7 +447,7 @@ async function deleteMember(id, name){
   }
 }
 
-function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka </option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
+function newVote(){modal('Novo glasanje',`<form onsubmit="saveVote(event)"><div class="field"><label>Naslov</label><input name="title" required></div><div class="field"><label>Opis</label><textarea name="description" required></textarea></div><div class="field"><label>Vrsta</label><select name="vote_type"><option value="anketa">Anketa</option><option value="formalna_odluka">Formalna odluka (zahtijeva pravnu provjeru)</option></select></div><div class="field"><label>Rok zatvaranja</label><input name="closes_at" type="datetime-local"></div><div class="field"><label>Opcije (odvojene zarezom)</label><input name="options" value="Za,Protiv,Suzdržan" required></div><button class="btn">Kreiraj glasovanje</button></form>`)}
 async function saveVote(e){e.preventDefault();let f=new FormData(e.target);let {data:v,error}=await sb.from('votes').insert({building_id:buildingId,title:f.get('title'),description:f.get('description'),vote_type:f.get('vote_type'),closes_at:f.get('closes_at')||null,status:'open',created_by:user.id}).select().single();if(error){alert(error.message);return}let opts=f.get('options').split(',').map(x=>x.trim()).filter(Boolean).map(label=>({vote_id:v.id,label}));let r=await sb.from('vote_options').insert(opts);if(r.error)alert(r.error.message);closeModal();render()}
 async function castVote(id){let {data:o,error}=await sb.from('vote_options').select('*').eq('vote_id',id);if(error){alert(error.message);return}modal('Vaš glas',`<p class="sub">Glas se može predati samo jednom. Nakon predaje nije ga moguće samostalno mijenjati.</p><div class="actions">${o.map(x=>`<button class="btn secondary" onclick="submitBallot('${id}','${x.id}')">${esc(x.label)}</button>`).join('')}</div>`)}
 async function submitBallot(vote_id,option_id){let {error}=await sb.rpc('cast_vote',{p_vote_id:vote_id,p_option_id:option_id});if(error)alert(error.message);else{closeModal();alert('Glas je zabilježen.');render()}}
@@ -543,36 +543,62 @@ async function printVoteReport(id){
     if(e2) throw e2;
 
     const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
-    const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td>${Number(r.votes_count||0)}</td><td>${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
-    const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td>${Number(p.share_percent||0).toFixed(4)}%</td><td>${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
+    
+    const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td style="text-align:center">${Number(r.votes_count||0)}</td><td style="text-align:center">${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
+    
+    const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td style="text-align:center">${esc(p.option_label||'Nije glasovao')}</td><td style="text-align:center">${Number(p.share_percent||0).toFixed(4)}%</td><td style="text-align:center">${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
 
     const html=`<!DOCTYPE html><html lang="hr"><head><meta charset="UTF-8"><title>Izvještaj glasovanja - ${esc(v.title||'')}</title><style>
-        body{font-family:Arial,sans-serif;color:#222;margin:25px;font-size:12px;}
-        h1{font-size:20px;margin-bottom:5px} h2{font-size:16px;margin-top:25px}
-        .info{margin:8px 0;line-height:1.6}
-        .description{border:1px solid #ccc;padding:10px;white-space:pre-wrap;line-height:1.5;}
-        table{width:100%;border-collapse:collapse;margin-top:10px;}
-        th,td{border:1px solid #999;padding:7px;text-align:left;vertical-align:top;}
-        th{background:#eee} thead{display:table-header-group} tr{page-break-inside:avoid}
-        .note{margin-top:10px;font-size:9px}
-        .report-brand{display:flex;align-items:center;gap:12px;border-bottom:2px solid #17365d;padding-bottom:8px;margin-bottom:10px}
-        .report-brand img{width:68px;height:54px;object-fit:contain}
-        .report-brand h1{margin:0 0 4px;color:#17365d;font-size:18px}
-        h2{font-size:13px;margin-top:12px;margin-bottom:5px}
-        th,td{padding:4px 6px;font-size:10px}
-        .description{padding:6px;line-height:1.25}
-        @page{size:A4 landscape;margin:8mm}
-        @media print{ body{margin:0} .no-print{display:none} }
+        * { box-sizing: border-box; }
+        body{font-family:Arial,sans-serif;color:#222;margin:0;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+        h1{font-size:18px;margin:0 0 4px;color:#17365d;}
+        h2{font-size:14px;margin:15px 0 5px;}
+        .info{margin:10px 0;line-height:1.5;}
+        .description{border:1px solid #ccc;padding:8px;white-space:pre-wrap;line-height:1.3;margin-bottom:10px;}
+        table{width:100%;border-collapse:collapse;margin-top:5px;table-layout:fixed;}
+        th,td{border:1px solid #999;padding:5px 6px;text-align:left;vertical-align:middle;word-wrap:break-word;}
+        th{background:#eee;font-weight:bold;}
+        thead{display:table-header-group;}
+        tr{page-break-inside:avoid;}
+        .note{margin-top:15px;font-size:9px;color:#555;}
+        .report-brand{display:flex;align-items:center;gap:15px;border-bottom:2px solid #17365d;padding-bottom:10px;margin-bottom:15px;}
+        .report-brand img{width:70px;height:auto;}
+        
+        @page { size: A4 landscape; margin: 10mm; }
+        @media print { body { margin: 0; } }
       </style></head><body>
-      <div class="report-brand"><img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO"><div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div></div>
-      <div class="info"><b>Naslov glasovanja:</b> ${esc(v.title||'')}<br><b>Vrsta:</b> ${esc(v.vote_type||'')}<br><b>Status:</b> ${esc(v.status||'')}<br><b>Razdoblje od:</b> ${fmt(v.opens_at)}<br><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
+      <div class="report-brand">
+        <img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO">
+        <div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div>
+      </div>
+      
+      <div class="info">
+        <b>Naslov glasovanja:</b> ${esc(v.title||'')}<br>
+        <b>Vrsta:</b> ${esc(v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa')}<br>
+        <b>Status:</b> ${esc(v.status==='open'?'Otvoreno':'Zatvoreno')}<br>
+        <b>Razdoblje od:</b> ${fmt(v.opens_at)}<br>
+        <b>Razdoblje do:</b> ${fmt(v.closes_at)}
+      </div>
+      
       <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
-      <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
-      <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
-      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. </div>
+      
+      <h2>Ukupni rezultati</h2>
+      <table>
+        <colgroup><col style="width:50%"><col style="width:25%"><col style="width:25%"></colgroup>
+        <thead><tr><th>Opcija</th><th style="text-align:center">Broj glasova</th><th style="text-align:center">Udio (%)</th></tr></thead>
+        <tbody>${aggregate}</tbody>
+      </table>
+      
+      <h2>Pojedinačni glasovi suvlasnika</h2>
+      <table>
+        <colgroup><col style="width:15%"><col style="width:35%"><col style="width:20%"><col style="width:15%"><col style="width:15%"></colgroup>
+        <thead><tr><th>Stan</th><th>Suvlasnik</th><th style="text-align:center">Glas</th><th style="text-align:center">Udio (%)</th><th style="text-align:center">Vrijeme glasovanja</th></tr></thead>
+        <tbody>${individual}</tbody>
+      </table>
+      
+      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. Pravnu valjanost odluke treba provjeriti zasebno.</div>
     </body></html>`;
 
-    // Skriveni iframe za ispis (pouzdanije na mobitelu od window.open)
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.width = '0';
