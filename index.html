@@ -113,6 +113,7 @@
 </div><div id="modalRoot"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script src="config.js"></script>
 <script>
@@ -480,7 +481,40 @@ async function exportVoteExcel(id){
     ws.mergeCells('B1:E2');ws.getCell('B1').value='SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA';ws.getCell('B1').font={name:'Arial',size:16,bold:true,color:{argb:'FF'+navy}};ws.getCell('B1').alignment={vertical:'middle',horizontal:'center',wrapText:true};
     ws.getRow(1).height=34;ws.getRow(2).height=34;ws.getRow(3).height=10;
     function band(row,text){ws.mergeCells(`A${row}:E${row}`);const c=ws.getCell(`A${row}`);c.value=text;c.font={bold:true,color:{argb:'FFFFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+navy}};c.alignment={vertical:'middle'};c.border=border;ws.getRow(row).height=21}
-    function meta(row,label,value){ws.getCell(`A${row}`).value=label;ws.getCell(`A${row}`).font={bold:true,color:{argb:'FF'+navy}};ws.getCell(`A${row}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+blue}};ws.mergeCells(`B${row}:E${row}`);ws.getCell(`B${row}`).value=value||'—';ws.getCell(`B${row}`).alignment={wrapText:true,vertical:'middle'};for(let c=1;c<=5;c++)ws.getRow(row).getCell(c).border=border;ws.getRow(row).height=row===6?30:21}
+    function estimateWrappedLines(value,maxChars=82){
+      const paragraphs=String(value??'—').replace(/\r/g,'').split('\n');
+      let count=0;
+      for(const paragraph of paragraphs){
+        const words=paragraph.trim().split(/\s+/).filter(Boolean);
+        if(!words.length){count++;continue;}
+        let line='';
+        for(let word of words){
+          while(word.length>maxChars){
+            const part=word.slice(0,maxChars);
+            if(line){count++;line='';}
+            count++;
+            word=word.slice(maxChars);
+          }
+          if(!line) line=word;
+          else if((line+' '+word).length<=maxChars) line+=' '+word;
+          else {count++;line=word;}
+        }
+        if(line) count++;
+      }
+      return Math.max(1,count);
+    }
+    function meta(row,label,value){
+      const textValue=String(value||'—');
+      ws.getCell(`A${row}`).value=label;
+      ws.getCell(`A${row}`).font={bold:true,color:{argb:'FF'+navy}};
+      ws.getCell(`A${row}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF'+blue}};
+      ws.mergeCells(`B${row}:E${row}`);
+      ws.getCell(`B${row}`).value=textValue;
+      ws.getCell(`B${row}`).alignment={wrapText:true,vertical:'middle'};
+      for(let c=1;c<=5;c++) ws.getRow(row).getCell(c).border=border;
+      const lines=estimateWrappedLines(textValue,82);
+      ws.getRow(row).height=Math.max(21,Math.min(450,lines*15+8));
+    }
     const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
     meta(4,'Zgrada','Put Skalica 12, Split');meta(5,'Glasovanje',v.title||'');meta(6,'Opis',v.description||'Bez opisa');meta(7,'Vrsta',v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa');meta(8,'Početak',fmt(v.opens_at));meta(9,'Završetak',fmt(v.closes_at));meta(10,'Status',v.status==='open'?'Otvoreno':'Zatvoreno');
     band(12,'UKUPNI REZULTATI');
@@ -534,79 +568,121 @@ async function updateMember(e,id){
 async function reportPicker(){let a=await rows('votes');modal('PDF izvještaj',`<div class="field"><label>Odaberite glasanje</label><select id="reportVote">${a.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select></div><button class="btn" onclick="makeReport()">Generiraj PDF</button>`)}
 
 async function printVoteReport(id){
+  let reportNode=null;
   try {
-    const {data:v,error:ev}=await sb.from('votes').select('*').eq('id',id).single();
+    if(!window.jspdf?.jsPDF){throw new Error('PDF biblioteka nije učitana. Osvježite aplikaciju i pokušajte ponovno.');}
+    if(typeof window.html2canvas!=='function'){throw new Error('Biblioteka za izradu PDF-a nije učitana. Provjerite internetsku vezu i pokušajte ponovno.');}
+
+    const [{data:v,error:ev},{data:totals,error:e1},{data:people,error:e2}]=await Promise.all([
+      sb.from('votes').select('*').eq('id',id).single(),
+      sb.rpc('vote_results',{p_vote_id:id}),
+      sb.rpc('vote_individual_results',{p_vote_id:id})
+    ]);
     if(ev) throw ev;
-    const {data:totals,error:e1}=await sb.rpc('vote_results',{p_vote_id:id});
     if(e1) throw e1;
-    const {data:people,error:e2}=await sb.rpc('vote_individual_results',{p_vote_id:id});
     if(e2) throw e2;
 
-    const fmt=s=>s?new Date(s).toLocaleString('hr-HR'):'Nije određeno';
-    const aggregate=totals.map(r=>`<tr><td>${esc(r.option_label||'')}</td><td>${Number(r.votes_count||0)}</td><td>${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
-    const individual=people.map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td>${Number(p.share_percent||0).toFixed(4)}%</td><td>${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
+    const fmt=s=>s?new Date(s).toLocaleString('hr-HR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Nije određeno';
+    const aggregate=(totals||[]).map(r=>`<tr><td>${esc(r.option_label||'')}</td><td class="center">${Number(r.votes_count||0)}</td><td class="center">${Number(r.share_percent||0).toFixed(4)}%</td></tr>`).join('');
+    const individual=(people||[]).map(p=>`<tr><td>${esc(p.unit_label||'')}</td><td>${esc(p.display_name||'')}</td><td>${esc(p.option_label||'Nije glasovao')}</td><td class="center">${Number(p.share_percent||0).toFixed(4)}%</td><td class="center">${p.voted_at?fmt(p.voted_at):'—'}</td></tr>`).join('');
 
-    const html=`<!DOCTYPE html><html lang="hr"><head><meta charset="UTF-8"><title>Izvještaj glasovanja - ${esc(v.title||'')}</title><style>
-        body{font-family:Arial,sans-serif;color:#222;margin:25px;font-size:12px;}
-        h1{font-size:20px;margin-bottom:5px} h2{font-size:16px;margin-top:25px}
-        .info{margin:8px 0;line-height:1.6}
-        .description{border:1px solid #ccc;padding:10px;white-space:pre-wrap;line-height:1.5;}
-        table{width:100%;border-collapse:collapse;margin-top:10px;}
-        th,td{border:1px solid #999;padding:7px;text-align:left;vertical-align:top;}
-        th{background:#eee} thead{display:table-header-group} tr{page-break-inside:avoid}
-        .note{margin-top:10px;font-size:9px}
-        .report-brand{display:flex;align-items:center;gap:12px;border-bottom:2px solid #17365d;padding-bottom:8px;margin-bottom:10px}
-        .report-brand img{width:68px;height:54px;object-fit:contain}
-        .report-brand h1{margin:0 0 4px;color:#17365d;font-size:18px}
-        h2{font-size:13px;margin-top:12px;margin-bottom:5px}
-        th,td{padding:4px 6px;font-size:10px}
-        .description{padding:6px;line-height:1.25}
-        @page{size:A4 landscape;margin:8mm}
-        @media print{ body{margin:0} .no-print{display:none} }
-      </style></head><body>
-      <div class="report-brand"><img id="reportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO"><div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div>Put Skalica 12, Split</div></div></div>
-      <div class="info"><b>Naslov glasovanja:</b> ${esc(v.title||'')}<br><b>Vrsta:</b> ${esc(v.vote_type||'')}<br><b>Status:</b> ${esc(v.status||'')}<br><b>Razdoblje od:</b> ${fmt(v.opens_at)}<br><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
-      <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
-      <h2>Ukupni rezultati</h2><table><thead><tr><th>Opcija</th><th>Broj glasova</th><th>Udio (%)</th></tr></thead><tbody>${aggregate}</tbody></table>
-      <h2>Pojedinačni glasovi suvlasnika</h2><table><thead><tr><th>Stan</th><th>Suvlasnik</th><th>Glas</th><th>Udio (%)</th><th>Vrijeme glasovanja</th></tr></thead><tbody>${individual}</tbody></table>
-      <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije. </div>
-    </body></html>`;
+    // Izvještaj se gradi kao zaseban dokument, a ne snima se zaslon aplikacije.
+    reportNode=document.createElement('div');
+    reportNode.setAttribute('aria-hidden','true');
+    reportNode.style.cssText='position:fixed;left:-12000px;top:0;width:1120px;background:#fff;z-index:-1;';
+    reportNode.innerHTML=`
+      <style>
+        .pdf-report{width:1120px;box-sizing:border-box;padding:30px 34px;background:#fff;color:#222;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.35}
+        .pdf-report *{box-sizing:border-box}
+        .pdf-report .brand{display:flex;align-items:center;gap:16px;border-bottom:3px solid #17365d;padding-bottom:12px;margin-bottom:15px;min-height:78px}
+        .pdf-report .brand img{width:105px;height:68px;object-fit:contain;flex:0 0 auto}
+        .pdf-report .brand h1{font-size:24px;line-height:1.2;margin:0 0 5px;color:#17365d;font-weight:700}
+        .pdf-report .address{font-size:14px;color:#333}
+        .pdf-report .info{font-size:13px;line-height:1.55;margin:0 0 12px}
+        .pdf-report .info div{margin:1px 0}
+        .pdf-report .description{border:1px solid #a6b7c8;padding:9px 11px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.4;font-size:13px}
+        .pdf-report h2{font-size:16px;color:#17365d;margin:16px 0 6px;line-height:1.2}
+        .pdf-report table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 7px;font-size:12px}
+        .pdf-report th,.pdf-report td{border:1px solid #8998a8;padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+        .pdf-report th{background:#eaf0f6;color:#17365d;font-weight:700}
+        .pdf-report .center{text-align:center}
+        .pdf-report .note{font-size:10px;color:#555;margin-top:10px}
+      </style>
+      <section class="pdf-report">
+        <div class="brand">
+          <img id="pdfReportLogo" src="https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/logo.png" alt="SUVLASNIK PRO">
+          <div><h1>SUVLASNIK PRO – IZVJEŠTAJ GLASOVANJA</h1><div class="address">Put Skalica 12, Split</div></div>
+        </div>
+        <div class="info">
+          <div><b>Naslov glasovanja:</b> ${esc(v.title||'')}</div>
+          <div><b>Vrsta:</b> ${esc(v.vote_type==='formalna_odluka'?'Formalna odluka':'Anketa')}</div>
+          <div><b>Status:</b> ${esc(v.status==='open'?'Otvoreno':'Zatvoreno')}</div>
+          <div><b>Razdoblje od:</b> ${fmt(v.opens_at)}</div>
+          <div><b>Razdoblje do:</b> ${fmt(v.closes_at)}</div>
+        </div>
+        <div class="description"><b>Opis:</b> ${esc(v.description||'Bez opisa')}</div>
+        <h2>Ukupni rezultati</h2>
+        <table><thead><tr><th style="width:55%">Opcija</th><th style="width:20%">Broj glasova</th><th style="width:25%">Udio (%)</th></tr></thead><tbody>${aggregate||'<tr><td colspan="3">Nema evidentiranih glasova.</td></tr>'}</tbody></table>
+        <h2>Pojedinačni glasovi suvlasnika</h2>
+        <table><thead><tr><th style="width:13%">Stan</th><th style="width:25%">Suvlasnik</th><th style="width:20%">Glas</th><th style="width:14%">Udio (%)</th><th style="width:28%">Vrijeme glasovanja</th></tr></thead><tbody>${individual||'<tr><td colspan="5">Nema evidentiranih suvlasnika.</td></tr>'}</tbody></table>
+        <div class="note">Izvještaj je evidencijski prikaz podataka iz aplikacije.</div>
+      </section>`;
+    document.body.appendChild(reportNode);
 
-    // Skriveni iframe za ispis (pouzdanije na mobitelu od window.open)
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'fixed';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    iframe.style.left = '-9999px';
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
-
-    const logo = doc.getElementById('reportLogo');
-    if (logo && !logo.complete) {
-        await new Promise(resolve => {
-            logo.onload = resolve;
-            logo.onerror = resolve;
-        });
+    const logo=reportNode.querySelector('#pdfReportLogo');
+    if(logo){
+      try{
+        if(typeof logo.decode==='function') await logo.decode();
+        else if(!logo.complete) await new Promise(resolve=>{logo.onload=resolve;logo.onerror=resolve;});
+      }catch(_){ /* Izvještaj se može izraditi i bez logotipa. */ }
     }
 
-    iframe.contentWindow.focus();
-    setTimeout(() => {
-        iframe.contentWindow.print();
-        setTimeout(() => {
-            if (document.body.contains(iframe)) {
-                document.body.removeChild(iframe);
-            }
-        }, 2000);
-    }, 500);
+    // HTML izvještaja pretvara se u PDF; mobilni preglednik ne ispisuje stranicu aplikacije.
+    const capture=reportNode.querySelector('.pdf-report');
+    const canvas=await html2canvas(capture,{
+      scale:2,
+      backgroundColor:'#ffffff',
+      useCORS:true,
+      allowTaint:false,
+      logging:false,
+      width:1120,
+      windowWidth:1120,
+      scrollX:0,
+      scrollY:0
+    });
 
-  } catch (error) {
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
+    pdf.setProperties({title:`Izvještaj glasovanja - ${v.title||''}`,subject:'SUVLASNIK PRO – rezultati glasovanja',author:'SUVLASNIK PRO'});
+
+    const pageWidth=297, pageHeight=210, margin=8;
+    const contentWidth=pageWidth-margin*2, contentHeight=pageHeight-margin*2;
+    const pixelsPerMm=canvas.width/contentWidth;
+    const sliceHeight=Math.max(1,Math.floor(contentHeight*pixelsPerMm));
+    let y=0, page=0;
+    while(y<canvas.height){
+      const h=Math.min(sliceHeight,canvas.height-y);
+      const pageCanvas=document.createElement('canvas');
+      pageCanvas.width=canvas.width;
+      pageCanvas.height=h;
+      const ctx=pageCanvas.getContext('2d');
+      ctx.fillStyle='#ffffff';
+      ctx.fillRect(0,0,pageCanvas.width,pageCanvas.height);
+      ctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+      if(page>0) pdf.addPage('a4','landscape');
+      const imageData=pageCanvas.toDataURL('image/jpeg',0.96);
+      pdf.addImage(imageData,'JPEG',margin,margin,contentWidth,h/pixelsPerMm,undefined,'FAST');
+      y+=h;
+      page++;
+    }
+
+    const safeName=(v.title||'glasanje').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-|-$/g,'');
+    pdf.save(`rezultati-glasovanja-${safeName||id}.pdf`);
+  } catch(error) {
     console.error(error);
-    alert('Greška pri izradi PDF-a: ' + error.message);
+    alert('Greška pri izradi PDF-a: '+(error?.message||error));
+  } finally {
+    if(reportNode && reportNode.parentNode) reportNode.parentNode.removeChild(reportNode);
   }
 }
 
