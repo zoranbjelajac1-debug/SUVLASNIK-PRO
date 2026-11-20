@@ -120,6 +120,7 @@
 const $=id=>document.getElementById(id);
 const NAV=[['home','⌂','Početna'],['votes','☑','Glasovanja'],['issues','🔧','Problemi'],['docs','▤','Dokumenti'],['archive','▣','Arhiva'],['news','◉','Obavijesti'],['admin','⚙','Administracija']];
 const SUPER_ADMIN_EMAIL = 'zoran.bjelajac1@gmail.com'; // <--- OVDJE UPŠITE VAŠ E-MAIL
+const APP_URL = 'https://zoranbjelajac1-debug.github.io/SUVLASNIK-PRO/'; // Puna GitHub Pages adresa aplikacije
 
 function isSuperAdmin(){ return user?.email === SUPER_ADMIN_EMAIL; }
 function isPredstavnik(){ return profile?.role === 'admin'; }
@@ -152,14 +153,39 @@ function nav(){
   $('mobile').innerHTML=visible.filter(x=>x[0]!=='archive').map(([id,ic,t])=>`<button class="${page===id?'active':''}" onclick="go('${id}')"><b>${ic}</b><span class="mlabel">${short(t)}</span></button>`).join('');
 }
 
-async function boot(){if(!configured){msg('Nedostaje konfiguracija Supabase projekta. Pogledajte README i config.js.');return}sb=window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey);const {data:{session}}=await sb.auth.getSession();if(session)await enter(session.user);$('loginForm').addEventListener('submit',login);sb.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') { showPasswordReset(); }
-  if (event === 'SIGNED_OUT') {
-    user = null; profile = null;
-    $('app').classList.add('hide'); $('auth').classList.remove('hide');
-    $('loginForm').classList.remove('hide'); $('passwordSetup').classList.add('hide'); $('passwordResetPanel').classList.add('hide');
+async function boot(){
+  if(!configured){msg('Nedostaje konfiguracija Supabase projekta. Pogledajte README i config.js.');return}
+  // Prepoznajemo recovery poveznicu prije inicijalizacije sesije.
+  const hashParams = new URLSearchParams(location.hash.replace(/^#/,''));
+  const queryParams = new URLSearchParams(location.search);
+  const recoveryInUrl = hashParams.get('type') === 'recovery' || queryParams.get('type') === 'recovery';
+
+  sb=window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey);
+  let recoveryEventReceived = false;
+
+  // Slušatelj se postavlja prije getSession() kako ne bismo propustili PASSWORD_RECOVERY događaj.
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      recoveryEventReceived = true;
+      showPasswordReset();
+    }
+    if (event === 'SIGNED_OUT') {
+      user = null; profile = null;
+      $('app').classList.add('hide'); $('auth').classList.remove('hide');
+      $('loginForm').classList.remove('hide'); $('passwordSetup').classList.add('hide'); $('passwordResetPanel').classList.add('hide');
+    }
+  });
+
+  $('loginForm').addEventListener('submit',login);
+  const {data:{session}}=await sb.auth.getSession();
+
+  // Kod resetiranja ne ulazimo automatski u aplikaciju; prvo prikazujemo obrazac za novu lozinku.
+  if(recoveryInUrl || recoveryEventReceived){
+    showPasswordReset();
+    return;
   }
-});}
+  if(session) await enter(session.user);
+}
 
 function showPasswordSetup(){
   $('auth').classList.remove('hide'); $('app').classList.add('hide');
@@ -182,8 +208,21 @@ async function saveInitialPassword(e){
 }
 
 async function login(e){e.preventDefault();msg('Provjera prijave…');const {data,error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error){msg(error.message);return}await enter(data.user)}
-async function resetPassword(){if(!configured){msg('Supabase nije konfiguriran.');return}const email=$('email').value;if(!email){msg('Najprije unesite e-mail adresu.');return}const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});msg(error?error.message:'Poslana je poveznica za promjenu lozinke.',!error)}
-function showPasswordReset() { $('loginForm').classList.add('hide'); $('passwordResetPanel').classList.remove('hide'); msg('Unesite i potvrdite novu lozinku.', true); }
+async function resetPassword(){
+  if(!configured){msg('Supabase nije konfiguriran.');return}
+  const email=$('email').value;
+  if(!email){msg('Najprije unesite e-mail adresu.');return}
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:APP_URL});
+  msg(error?error.message:'Poslana je poveznica za promjenu lozinke.',!error);
+}
+function showPasswordReset() {
+  $('auth').classList.remove('hide');
+  $('app').classList.add('hide');
+  $('loginForm').classList.add('hide');
+  $('passwordSetup').classList.add('hide');
+  $('passwordResetPanel').classList.remove('hide');
+  msg('Poveznica je potvrđena. Unesite i potvrdite novu lozinku.', true);
+}
 
 async function saveNewPassword(e) {
   e.preventDefault();
